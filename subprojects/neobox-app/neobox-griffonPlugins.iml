@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$USER_HOME$/.griffon/1.4.0/projects/neobox-app/plugins/csv-1.0.0" />
+    <content url="file://$USER_HOME$/.griffon/1.4.0/projects/neobox-app/plugins/glazedlists-2.0.0" />
+    <content url="file://$USER_HOME$/.griffon/1.4.0/projects/neobox-app/plugins/installer-0.8" />
+    <content url="file://$USER_HOME$/.griffon/1.4.0/projects/neobox-app/plugins/jbusycomponent-1.0.0" />
+    <content url="file://$USER_HOME$/.griffon/1.4.0/projects/neobox-app/plugins/jgoodies-forms-1.0.1" />
+    <content url="file://$USER_HOME$/.griffon/1.4.0/projects/neobox-app/plugins/jxlayer-1.0.0" />
+    <content url="file://$USER_HOME$/.griffon/1.4.0/projects/neobox-app/plugins/miglayout-1.0.0" />
+    <content url="file://$USER_HOME$/.griffon/1.4.0/projects/neobox-app/plugins/splash-1.0.0" />
+    <content url="file://$USER_HOME$/.griffon/1.4.0/projects/neobox-app/plugins/spock-0.7" />
+    <content url="file://$USER_HOME$/.griffon/1.4.0/projects/neobox-app/plugins/swing-1.4.0" />
+    <content url="file://$USER_HOME$/.griffon/1.4.0/projects/neobox-app/plugins/swingx-builder-0.7" />
+    <orderEntry type="jdk" jdkName="1.6" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="griffon-1.4.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="griffon-1.4.0" level="application" />
+    <orderEntry type="module-library" exported="">
+      <library name="Griffon:lib (neobox-griffonPlugins)">
+        <CLASSES>
+          <root url="file://$USER_HOME$/.griffon/1.4.0/projects/neobox-app/plugins/installer-0.8/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$USER_HOME$/.griffon/1.4.0/projects/neobox-app/plugins/installer-0.8/lib" recursive="false" />
+      </library>
+    </orderEntry>
+  </component>
+</module>
+

@@ -1,0 +1,81 @@
+/*
+ * Copyright 2014 Fabrizio Carinci, AGENAS.
+ *
+ * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+ /**
+ * @author Fabrizio Carinci <carinci@agenas.it>
+ */
+
+/****************
+ DB Sources Heart Failure
+*****************/
+
+indicator {
+
+ id = 'db_sources_hf'
+ dependsOn = ['setup']
+ description = "Creazione file input Fonti Scompenso Cardiaco"
+ hidden=true
+ excludeReport = true
+
+ input {
+
+  table = "thematrix"
+
+  fields = [
+   /* Population level */
+   'DIST_MMG',
+   /* Local System levels */
+   'MMG',
+   /* Adjusters */
+   'SESSO',
+   'AGE_RANGE',
+   /* Chronic Diseases */
+   'HYPERTE',
+   'DIAB',
+   'IHD',
+   'HF',
+   'DEMEN',
+   /* Sources */
+   "ifnull(sum(locate('HOSP',FONTI_HF)>0),0) as FONTI_HF_1",
+   "ifnull(sum(locate('EXE',FONTI_HF)>0),0) as FONTI_HF_2",
+   "ifnull(sum(locate('DRUGS',FONTI_HF)>0 OR locate('DDRUG',FONTI_HF)>0),0) as FONTI_HF_3",
+   "ifnull(sum(locate('HOSP',FONTI_HF)>0 AND locate('EXE',FONTI_HF)>0),0) as FONTI_HF_12",
+   "ifnull(sum(locate('HOSP',FONTI_HF)>0 AND (locate('DRUGS',FONTI_HF)>0 OR locate('DDRUG',FONTI_HF)>0)),0) as FONTI_HF_13",
+   "ifnull(sum(locate('EXE',FONTI_HF)>0 AND (locate('DRUGS',FONTI_HF)>0 OR locate('DDRUG',FONTI_HF)>0)),0) as FONTI_HF_23",
+   "ifnull(sum(locate('HOSP',FONTI_HF)>0 AND locate('EXE',FONTI_HF)>0 AND (locate('DRUGS',FONTI_HF)>0 OR locate('DDRUG',FONTI_HF)>0)),0) as FONTI_HF_123",
+   /* Row Count */
+   'count(*) as COUNT'
+  ]
+
+  groups = [
+   /* Population level */
+   'DIST_MMG',
+   /* Local System levels */
+   'MMG',
+   /* Adjusters */
+   'SESSO',
+   'AGE_RANGE',
+   /* Chronic Diseases */
+   'HYPERTE',
+   'DIAB',
+   'IHD',
+   'HF',
+   'DEMEN'
+  ]
+
+  file = "input.csv"
+ }
+}

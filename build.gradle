@@ -1,0 +1,88 @@
+/*
+ * Copyright 2014 Stefano Gualdi, AGENAS.
+ *
+ * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+ /**
+ * @author Stefano Gualdi <stefano.gualdi@gmail.com>
+ */
+
+apply plugin: 'groovy'
+apply plugin: 'idea'
+
+// Fail the build if we don't have the expected Java version
+def javaVersion = System.getProperty("java.version")
+if (!javaVersion.startsWith("1.7")) {
+    throw new IllegalStateException("Please update JAVA_HOME to use a 1.7 JDK (it is: $javaVersion)")
+}
+
+allprojects {
+    ext.neoboxVersion = "1.0.3"
+    ext.matriceVersion = "1.0.5"
+}
+
+subprojects { subproj ->
+    apply plugin: 'groovy'
+
+    if(plugins.hasPlugin('java')){
+        sourceCompatibility = 1.7
+        targetCompatibility = 1.7
+    }
+}
+
+task distBinaries(type: Copy, dependsOn: [':neobox-app:assemble']) {
+  description = "Creates the neobox binaries distribution."
+
+  // OSX version
+  from(project(':neobox-app').file('dist/mac')) {
+      include '*.dmg'
+  }
+
+  // Windows version
+  from(project(':neobox-app').file('dist/jsmooth')) {
+      include '*.zip'
+  }
+
+  // Multiplatforn installer
+  from(project(':neobox-app').file('dist/izpack')) {
+      include '*.jar'
+  }
+
+  into "${buildDir}/dist"
+}
+
+task distMatrice(type: Copy, dependsOn: [':neobox-matrice:distZip']) {
+  description = "Creates the matrice data/stats bundle distribution."
+
+  from(project(':neobox-matrice').file('build/distributions')) {
+    include '**/*.zip'
+  }
+  into "${buildDir}/dist"
+}
+
+task distMatriceSampleData(type: Copy, dependsOn: [':neobox-matrice-sample-data:distZip']) {
+  description = "Creates the matrice sample data bundle distribution."
+
+  from(project(':neobox-matrice-sample-data').file('build/distributions')) {
+    include '**/*.zip'
+  }
+  into "${buildDir}/dist"
+}
+
+task dist(type: Copy, dependsOn: [distBinaries, distMatrice, distMatriceSampleData]) {
+}
+
+wrapper {
+    gradleVersion = '1.12'
+}
