@@ -10,24 +10,25 @@ Organizzazione generale
 
 La struttura delle directory è la seguente:
 
+```
   NEObox project
   |
 	+-- subprojects
-		  |
-	    |-- neobox-app                  - Sorgenti applicazione NEObox
+	    |
+	    +-- neobox-app                  - Sorgenti applicazione NEObox
 	    |
 	    +-- neobox-matrice              - Pacchetto statistico MATRICE
 	    |   |
 	    |   +-- src
 	    |       |
-	    |       +--  import             - Specifiche di import
+	    |       +-- import              - Specifiche di import
 	    |       |
-	    |       +--  indicators         - Moduli statistici
+	    |       +-- indicators          - Moduli statistici
 	    |       |
-	    |       +--  tools              - Tools interni
+	    |       +-- tools               - Tools interni
 	    |
-      +-- neobox-matrice-sample-data  - Dati di esempio utili ai test
-
+        +-- neobox-matrice-sample-data  - Dati di esempio utili ai test
+```
 Compilazione del progetto
 =========================
 
