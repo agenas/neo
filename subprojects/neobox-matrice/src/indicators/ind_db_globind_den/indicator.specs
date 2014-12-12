@@ -1,0 +1,117 @@
+/*
+ * Copyright 2014 Fabrizio Carinci, AGENAS.
+ *
+ * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+ /**
+ * @author Fabrizio Carinci <carinci@agenas.it>
+ */
+
+/****************
+ DB Global Quality Indicator Denominator
+*****************/
+
+indicator {
+
+ id = 'db_globind_den'
+ dependsOn = ['setup']
+ description = "Creazione file input Denominatore Indicatore Globale"
+ hidden=true
+ excludeReport = true
+
+ input {
+
+  table = "thematrix"
+
+  fields = [
+   /* Population level */
+   'DIST_MMG',
+   /* Local System levels */
+   'MMG',
+   /* Adjusters */
+   'SESSO',
+   'AGE_RANGE',
+   /* Chronic Diseases */
+   'HYPERTE',
+   'DIAB',
+   'IHD',
+   'HF',
+   'DEMEN',
+   /* GLOBAL QUALITY SCORE */
+   /* Percentage of subjects above threshold */
+   /* Denominator */
+   'sum( \
+     ( \
+      CASEWHEN(DEN_CREATININ_HYPERTE,1.0,0.0)   + \
+      CASEWHEN(DEN_PROFLIP_HYPERTE,1.0,0.0)     + \
+      CASEWHEN(DEN_ECG_HYPERTE,1.0,0.0)         + \
+      CASEWHEN(DEN_MICROALB_HYPERTE,1.0,0.0)    + \
+      CASEWHEN(DEN_GLICEM_HYPERTE,1.0,0.0)      + \
+      CASEWHEN(DEN_EMOGLIC_DIAB,1.0,0.0)        + \
+      CASEWHEN(DEN_PROFLIP_DIAB,1.0,0.0)        + \
+      CASEWHEN(DEN_MICROALB_DIAB,1.0,0.0)       + \
+      CASEWHEN(DEN_FUNDOC_DIAB,1.0,0.0)         + \
+      CASEWHEN(DEN_STATINE_DIAB,1.0,0.0)        + \
+      CASEWHEN(DEN_CREATININ_DIAB,1.0,0.0)      + \
+      CASEWHEN(DEN_PROFLIP_IHD,1.0,0.0)         + \
+      CASEWHEN(DEN_GLICEM_IHD,1.0,0.0)          + \
+      CASEWHEN(DEN_ANTIAGGREG_IHD,1.0,0.0)      + \
+      CASEWHEN(DEN_BETABLOC_IHD,1.0,0.0)        + \
+      CASEWHEN(DEN_ACEINIB_IHD,1.0,0.0)         + \
+      CASEWHEN(DEN_STATINE_IHD,1.0,0.0)         + \
+      CASEWHEN(DEN_ECG_IHD,1.0,0.0)             + \
+      CASEWHEN(DEN_ERGOMETR_IHD,1.0,0.0)        + \
+      CASEWHEN(DEN_CREATNAK_HF,1.0,0.0)         + \
+      CASEWHEN(DEN_ACEINIB_HF,1.0,0.0)          + \
+      CASEWHEN(DEN_ECG_HF,1.0,0.0)              + \
+      CASEWHEN(DEN_BETABLOC_HF,1.0,0.0)         + \
+      CASEWHEN(DEN_NAKDIUR_HF,1.0,0.0)          + \
+      CASEWHEN(DEN_WALKTEST_HF,1.0,0.0)         + \
+      CASEWHEN(DEN_VISNEURO_DEMEN,1.0,0.0)      + \
+      CASEWHEN(DEN_TESTMEM_DEMEN,1.0,0.0)       + \
+      CASEWHEN(DEN_EMATOCHIM_DEMEN,1.0,0.0)     + \
+      CASEWHEN(DEN_ECG_DEMEN,1.0,0.0)           + \
+      CASEWHEN(DEN_NEUROLATIP_DEMEN,1.0,0.0)    + \
+      CASEWHEN(DEN_NEUROLTIP_DEMEN,1.0,0.0)     + \
+      CASEWHEN(DEN_ASSDOM_DEMEN,1.0,0.0)        + \
+      CASEWHEN(DEN_ASSRES_DEMEN,1.0,0.0)        + \
+      CASEWHEN(DEN_ASSREDEM_DEMEN,1.0,0.0)      + \
+      CASEWHEN(DEN_ASSSEMIRES_DEMEN,1.0,0.0)    + \
+      CASEWHEN(DEN_ASSSEMIREDEM_DEMEN,1.0,0.0)  + \
+      CASEWHEN(DEN_NEUROLATIVSTI_DEMEN,1.0,0.0) \
+     )>0.00 ) as DEN_HIGHSCORE_GLOBAL',
+   /* Row Count */
+   'count(*) as COUNT'
+  ]
+
+  groups = [
+   /* Population level */
+   'DIST_MMG',
+   /* Local System levels */
+   'MMG',
+   /* Adjusters */
+   'SESSO',
+   'AGE_RANGE',
+   /* Chronic Diseases */
+   'HYPERTE',
+   'DIAB',
+   'IHD',
+   'HF',
+   'DEMEN'
+  ]
+
+
+  file = "input.csv"
+ }
+}

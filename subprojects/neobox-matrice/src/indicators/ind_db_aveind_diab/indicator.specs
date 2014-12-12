@@ -1,0 +1,87 @@
+/*
+ * Copyright 2014 Fabrizio Carinci, AGENAS.
+ *
+ * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+ /**
+ * @author Fabrizio Carinci <carinci@agenas.it>
+ */
+
+/****************
+ DB Average Indicators Diabetes
+*****************/
+
+indicator {
+
+ id = 'db_aveind_diab'
+ dependsOn = ['setup']
+ description = "Creazione file input Medie Indicatori Diabete"
+ hidden=true
+ excludeReport = true
+
+ input {
+
+  table = "thematrix"
+
+  fields = [
+   /* Population level */
+   'DIST_MMG',
+   /* Local System levels */
+   'MMG',
+   /* Adjusters */
+   'SESSO',
+   'AGE_RANGE',
+   /* Chronic Diseases */
+   'HYPERTE',
+   'DIAB',
+   'IHD',
+   'HF',
+   'DEMEN',
+   /* Diabetes */
+   /* Average Quality Scores*/
+   'sum(NUM_EMOGLIC_DIAB is true and DEN_EMOGLIC_DIAB is true) as NUM_EMOGLIC_DIAB',
+   'sum(DEN_EMOGLIC_DIAB is true) as DEN_EMOGLIC_DIAB',
+   'sum(NUM_PROFLIP_DIAB is true and DEN_PROFLIP_DIAB is true) as NUM_PROFLIP_DIAB',
+   'sum(DEN_PROFLIP_DIAB is true) as DEN_PROFLIP_DIAB',
+   'sum(NUM_MICROALB_DIAB is true and DEN_MICROALB_DIAB is true) as NUM_MICROALB_DIAB',
+   'sum(DEN_MICROALB_DIAB is true) as DEN_MICROALB_DIAB',
+   'sum(NUM_FUNDOC_DIAB is true and DEN_FUNDOC_DIAB is true) as NUM_FUNDOC_DIAB',
+   'sum(DEN_FUNDOC_DIAB is true) as DEN_FUNDOC_DIAB',
+   'sum(NUM_STATINE_DIAB is true and DEN_STATINE_DIAB is true) as NUM_STATINE_DIAB',
+   'sum(DEN_STATINE_DIAB is true) as DEN_STATINE_DIAB',
+   'sum(NUM_CREATININ_DIAB is true and DEN_CREATININ_DIAB is true) as NUM_CREATININ_DIAB',
+   'sum(DEN_CREATININ_DIAB is true) as DEN_CREATININ_DIAB',
+   /* Row Count */
+   'count(*) as COUNT'
+  ]
+
+  groups = [
+   /* Population level */
+   'DIST_MMG',
+   /* Local System levels */
+   'MMG',
+   /* Adjusters */
+   'SESSO',
+   'AGE_RANGE',
+   /* Chronic Diseases */
+   'HYPERTE',
+   'DIAB',
+   'IHD',
+   'HF',
+   'DEMEN'
+  ]
+
+  file = "input.csv"
+ }
+}

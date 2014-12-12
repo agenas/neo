@@ -1,0 +1,13 @@
+*~
+.~*
+*.db
+
+.idea/workspace.xml
+.idea/dataSources.*
+
+target
+staging
+workdir
+/dist
+out
+

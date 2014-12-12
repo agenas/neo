@@ -1,0 +1,88 @@
+/*
+ * Copyright 2014 Fabrizio Carinci, AGENAS.
+ *
+ * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+ /**
+ * @author Fabrizio Carinci <carinci@agenas.it>
+ */
+
+/****************
+ DB Costs
+*****************/
+
+indicator {
+
+ id = 'db_cost'
+ dependsOn = ['setup']
+ description = "Creazione file input per tutti gli indicatori"
+ hidden=true
+ excludeReport = true
+
+ input {
+
+  table = "thematrix"
+
+  fields = [
+   /* Population level */
+   'DIST_MMG',
+   /* Local System levels */
+   'MMG',
+   /* Adjusters */
+   'SESSO',
+   'AGE_RANGE',
+   /* Chronic Diseases */
+   'HYPERTE',
+   'DIAB',
+   'IHD',
+   'HF',
+   'DEMEN',
+   /* Costs */
+   'sum(ifnull(TARIFFA_LORDO_VISITE,0)) as COSTO_VISITE',
+   'sum(power(ifnull(TARIFFA_LORDO_VISITE,0),2)) as COSTO_VISITE_2',
+   'sum(ifnull(TARIFFA_LORDO_DIA_IMM,0)) as COSTO_DIAIMM',
+   'sum(power(ifnull(TARIFFA_LORDO_DIA_IMM,0),2)) as COSTO_DIAIMM_2',
+   'sum(ifnull(TARIFFA_LORDO_DIA_LAB,0)) as COSTO_DIALIB',
+   'sum(power(ifnull(TARIFFA_LORDO_DIA_LAB,0),2)) as COSTO_DIALIB_2',
+   'sum(ifnull(TARIFFA_LORDO_FARMACI,0)) as COSTO_FARMACI',
+   'sum(power(ifnull(TARIFFA_LORDO_FARMACI,0),2)) as COSTO_FARMACI_2',
+   'sum(ifnull(TARIFFA_LORDO_OSPACDRGMED,0)) as COSTO_OSPACDRGMED',
+   'sum(ifnull(TARIFFA_LORDO_OSPACDRGCHIR,0)) as COSTO_OSPACDRGCHIR',
+   'sum(ifnull(TARIFFA_LORDO_OSPACDRGMED,0)+ifnull(TARIFFA_LORDO_OSPACDRGCHIR,0)) as COSTO_OSP',
+   'sum(power(ifnull(TARIFFA_LORDO_OSPACDRGMED,0)+ifnull(TARIFFA_LORDO_OSPACDRGCHIR,0),2)) as COSTO_OSP_2',
+   'sum(ifnull(TARIFFA_LORDO_VISITE,0)+ifnull(TARIFFA_LORDO_DIA_IMM,0)+ifnull(TARIFFA_LORDO_DIA_LAB,0)+ifnull(TARIFFA_LORDO_FARMACI,0)+ifnull(TARIFFA_LORDO_OSPACDRGMED,0)+ifnull(TARIFFA_LORDO_OSPACDRGCHIR,0)) as COSTO',
+   'sum(power(ifnull(TARIFFA_LORDO_VISITE,0)+ifnull(TARIFFA_LORDO_DIA_IMM,0)+ifnull(TARIFFA_LORDO_DIA_LAB,0)+ifnull(TARIFFA_LORDO_FARMACI,0)+ifnull(TARIFFA_LORDO_OSPACDRGMED,0)+ifnull(TARIFFA_LORDO_OSPACDRGCHIR,0),2)) as COSTO_2',
+   /* Row Count */
+   'count(*) as COUNT'
+  ]
+
+  groups = [
+   /* Population level */
+   'DIST_MMG',
+   /* Local System levels */
+   'MMG',
+   /* Adjusters */
+   'SESSO',
+   'AGE_RANGE',
+   /* Chronic Diseases */
+   'HYPERTE',
+   'DIAB',
+   'IHD',
+   'HF',
+   'DEMEN'
+  ]
+
+  file = "input.csv"
+ }
+}

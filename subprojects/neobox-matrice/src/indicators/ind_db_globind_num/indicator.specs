@@ -1,0 +1,140 @@
+/*
+ * Copyright 2014 Fabrizio Carinci, AGENAS.
+ *
+ * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+ /**
+ * @author Fabrizio Carinci <carinci@agenas.it>
+ */
+
+/****************
+ DB Global Quality Indicator Numerator
+*****************/
+
+indicator {
+
+ id = 'db_globind_num'
+ dependsOn = ['setup']
+ description = "Creazione file input Numeratore Indicatore Globale"
+ hidden=true
+ excludeReport = true
+
+ input {
+
+  table = "thematrix"
+
+  fields = [
+   /* Population level */
+   'DIST_MMG',
+   /* Local System levels */
+   'MMG',
+   /* Adjusters */
+   'SESSO',
+   'AGE_RANGE',
+   /* Chronic Diseases */
+   'HYPERTE',
+   'DIAB',
+   'IHD',
+   'HF',
+   'DEMEN',
+   /* GLOBAL QUALITY SCORE */
+   /* Percentage of subjects above threshold */
+   /* Numerator */
+   'sum( \
+     ((( \
+      CASEWHEN(NUM_CREATININ_HYPERTE   is true and DEN_CREATININ_HYPERTE   is true,1.0,0.0)+ \
+      CASEWHEN(NUM_PROFLIP_HYPERTE     is true and DEN_PROFLIP_HYPERTE     is true,1.0,0.0)+ \
+      CASEWHEN(NUM_ECG_HYPERTE         is true and DEN_ECG_HYPERTE         is true,1.0,0.0)+ \
+      CASEWHEN(NUM_MICROALB_HYPERTE    is true and DEN_MICROALB_HYPERTE    is true,1.0,0.0)+ \
+      CASEWHEN(NUM_GLICEM_HYPERTE      is true and DEN_GLICEM_HYPERTE      is true,1.0,0.0)+ \
+      CASEWHEN(NUM_EMOGLIC_DIAB        is true and DEN_EMOGLIC_DIAB        is true,1.0,0.0)+ \
+      CASEWHEN(NUM_PROFLIP_DIAB        is true and DEN_PROFLIP_DIAB        is true,1.0,0.0)+ \
+      CASEWHEN(NUM_MICROALB_DIAB       is true and DEN_MICROALB_DIAB       is true,1.0,0.0)+ \
+      CASEWHEN(NUM_FUNDOC_DIAB         is true and DEN_FUNDOC_DIAB         is true,1.0,0.0)+ \
+      CASEWHEN(NUM_STATINE_DIAB        is true and DEN_STATINE_DIAB        is true,1.0,0.0)+ \
+      CASEWHEN(NUM_CREATININ_DIAB      is true and DEN_CREATININ_DIAB      is true,1.0,0.0)+ \
+      CASEWHEN(NUM_PROFLIP_IHD         is true and DEN_PROFLIP_IHD         is true,1.0,0.0)+ \
+      CASEWHEN(NUM_GLICEM_IHD          is true and DEN_GLICEM_IHD          is true,1.0,0.0)+ \
+      CASEWHEN(NUM_ANTIAGGREG_IHD      is true and DEN_ANTIAGGREG_IHD      is true,1.0,0.0)+ \
+      CASEWHEN(NUM_BETABLOC_IHD        is true and DEN_BETABLOC_IHD        is true,1.0,0.0)+ \
+      CASEWHEN(NUM_ACEINIB_IHD         is true and DEN_ACEINIB_IHD         is true,1.0,0.0)+ \
+      CASEWHEN(NUM_STATINE_IHD         is true and DEN_STATINE_IHD         is true,1.0,0.0)+ \
+      CASEWHEN(NUM_ECG_IHD             is true and DEN_ECG_IHD             is true,1.0,0.0)+ \
+      CASEWHEN(NUM_ERGOMETR_IHD        is true and DEN_ERGOMETR_IHD        is true,1.0,0.0)+ \
+      CASEWHEN(NUM_CREATNAK_HF         is true and DEN_CREATNAK_HF         is true,1.0,0.0)+ \
+      CASEWHEN(NUM_ACEINIB_HF          is true and DEN_ACEINIB_HF          is true,1.0,0.0)+ \
+      CASEWHEN(NUM_ECG_HF              is true and DEN_ECG_HF              is true,1.0,0.0)+ \
+      CASEWHEN(NUM_BETABLOC_HF         is true and DEN_BETABLOC_HF         is true,1.0,0.0)+ \
+      CASEWHEN(NUM_NAKDIUR_HF          is true and DEN_NAKDIUR_HF          is true,1.0,0.0)+ \
+      CASEWHEN(NUM_WALKTEST_HF         is true and DEN_WALKTEST_HF         is true,1.0,0.0)+ \
+      CASEWHEN(NUM_VISNEURO_DEMEN      is true and DEN_VISNEURO_DEMEN      is true,1.0,0.0)+ \
+      CASEWHEN(NUM_TESTMEM_DEMEN       is true and DEN_TESTMEM_DEMEN       is true,1.0,0.0)+ \
+      CASEWHEN(NUM_EMATOCHIM_DEMEN     is true and DEN_EMATOCHIM_DEMEN     is true,1.0,0.0)+ \
+      CASEWHEN(NUM_ECG_DEMEN           is true and DEN_ECG_DEMEN           is true,1.0,0.0)  \
+     ) \
+     / \
+     nullif( \
+      CASEWHEN(DEN_CREATININ_HYPERTE,1.0,0.0)   + \
+      CASEWHEN(DEN_PROFLIP_HYPERTE,1.0,0.0)     + \
+      CASEWHEN(DEN_ECG_HYPERTE,1.0,0.0)         + \
+      CASEWHEN(DEN_MICROALB_HYPERTE,1.0,0.0)    + \
+      CASEWHEN(DEN_GLICEM_HYPERTE,1.0,0.0)      + \
+      CASEWHEN(DEN_EMOGLIC_DIAB,1.0,0.0)        + \
+      CASEWHEN(DEN_PROFLIP_DIAB,1.0,0.0)        + \
+      CASEWHEN(DEN_MICROALB_DIAB,1.0,0.0)       + \
+      CASEWHEN(DEN_FUNDOC_DIAB,1.0,0.0)         + \
+      CASEWHEN(DEN_STATINE_DIAB,1.0,0.0)        + \
+      CASEWHEN(DEN_CREATININ_DIAB,1.0,0.0)      + \
+      CASEWHEN(DEN_PROFLIP_IHD,1.0,0.0)         + \
+      CASEWHEN(DEN_GLICEM_IHD,1.0,0.0)          + \
+      CASEWHEN(DEN_ANTIAGGREG_IHD,1.0,0.0)      + \
+      CASEWHEN(DEN_BETABLOC_IHD,1.0,0.0)        + \
+      CASEWHEN(DEN_ACEINIB_IHD,1.0,0.0)         + \
+      CASEWHEN(DEN_STATINE_IHD,1.0,0.0)         + \
+      CASEWHEN(DEN_ECG_IHD,1.0,0.0)             + \
+      CASEWHEN(DEN_ERGOMETR_IHD,1.0,0.0)        + \
+      CASEWHEN(DEN_CREATNAK_HF,1.0,0.0)         + \
+      CASEWHEN(DEN_ACEINIB_HF,1.0,0.0)          + \
+      CASEWHEN(DEN_ECG_HF,1.0,0.0)              + \
+      CASEWHEN(DEN_BETABLOC_HF,1.0,0.0)         + \
+      CASEWHEN(DEN_NAKDIUR_HF,1.0,0.0)          + \
+      CASEWHEN(DEN_WALKTEST_HF,1.0,0.0)         + \
+      CASEWHEN(DEN_VISNEURO_DEMEN,1.0,0.0)      + \
+      CASEWHEN(DEN_TESTMEM_DEMEN,1.0,0.0)       + \
+      CASEWHEN(DEN_EMATOCHIM_DEMEN,1.0,0.0)     + \
+      CASEWHEN(DEN_ECG_DEMEN,1.0,0.0)             \
+     ,0)))>0.60 is true) as NUM_HIGHSCORE_GLOBAL',
+   /* Row Count */
+   'count(*) as COUNT'
+  ]
+
+  groups = [
+   /* Population level */
+   'DIST_MMG',
+   /* Local System levels */
+   'MMG',
+   /* Adjusters */
+   'SESSO',
+   'AGE_RANGE',
+   /* Chronic Diseases */
+   'HYPERTE',
+   'DIAB',
+   'IHD',
+   'HF',
+   'DEMEN'
+  ]
+
+  file = "input.csv"
+ }
+}

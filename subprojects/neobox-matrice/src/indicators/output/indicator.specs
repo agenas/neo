@@ -1,0 +1,43 @@
+/*
+ * Copyright 2014 Fabrizio Carinci, AGENAS.
+ *
+ * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+ /**
+ * @author Fabrizio Carinci <carinci@agenas.it>
+ */
+
+/**
+ * Indicatore output
+ */
+
+indicator {
+
+  id = 'output'
+
+  description = "Crea file di output con Tracciato Record Centrale"
+  description_en = "Create output file for Central Engine"
+
+  dependsOn = ['db_master','db_demographics',
+              'db_sources_hyperte','db_sources_diab','db_sources_ihd','db_sources_hf','db_sources_demen','db_sources_allpat',
+              'db_aveind_hyperte','db_aveind_diab','db_aveind_ihd','db_aveind_hf','db_aveind_demen',
+              'db_pctind_hyperte','db_pctind_diab','db_pctind_ihd','db_pctind_hf','db_pctind_demen',
+              'db_globind_num','db_globind_den',
+              'db_cost','db_discharge']
+
+  excludeReport = true
+
+  output {files = ["tracciato_record_centrale.zip","tracciato_record_oracle.zip"]}
+
+}

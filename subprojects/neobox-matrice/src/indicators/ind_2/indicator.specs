@@ -1,0 +1,38 @@
+/*
+ * Copyright 2014 Fabrizio Carinci, AGENAS.
+ *
+ * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+ /**
+ * @author Fabrizio Carinci <carinci@agenas.it>
+ */
+
+/****************
+ Sezione 2
+*****************/
+
+indicator {
+
+  id = '2'
+
+  description = "Inquadramento complessivo delle patologie"
+  description_en = "General description of diseases"
+
+  dependsOn = ['db_master',
+              'db_sources_hyperte','db_sources_diab','db_sources_ihd','db_sources_hf','db_sources_demen',
+              'db_sources_allpat']
+
+  output {files = ["report.xml"]}
+
+}

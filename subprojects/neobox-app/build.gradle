@@ -1,0 +1,56 @@
+/*
+ * Copyright 2014 Stefano Gualdi, AGENAS.
+ *
+ * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+* @author Stefano Gualdi <stefano.gualdi@gmail.com>
+*/
+
+buildscript {
+    repositories {
+        maven { url 'http://repository.codehaus.org' }
+        maven { url 'http://repository.springsource.com/maven/bundles/release' }
+        maven { url 'http://repository.sonatype.org/content/groups/public' }
+        maven { url 'http://repo.grails.org/grails/core/' }
+        maven { url 'http://download.java.net/maven/2/' }
+        maven { url 'http://dl.bintray.com/aalmiray/maven' }
+
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath('org.codehaus.griffon:gradle-griffon-plugin:1.1.0')
+        classpath('org.codehaus.griffon:griffon-scripts:1.4.0')
+    }
+}
+
+version = ext.neoboxVersion
+
+ext.griffonVersion = '1.4.0'
+
+apply plugin: 'project-report'
+apply plugin: 'griffon'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url 'http://repository.codehaus.org/' }
+    maven { url 'http://dl.bintray.com/aalmiray/maven' }
+}
+
+dependencies {
+    compile "org.codehaus.griffon:griffon-rt:$griffonVersion"
+}

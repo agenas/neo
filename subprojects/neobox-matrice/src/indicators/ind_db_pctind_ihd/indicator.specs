@@ -1,0 +1,110 @@
+/*
+ * Copyright 2014 Fabrizio Carinci, AGENAS.
+ *
+ * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+ /**
+ * @author Fabrizio Carinci <carinci@agenas.it>
+ */
+
+/****************
+ DB Percentage Above Threshold Ischemic Heart Disease
+*****************/
+
+indicator {
+
+ id = 'db_pctind_ihd'
+ dependsOn = ['setup']
+ description = "Creazione file input Percentuale sopra Threshold Cardiopatia Ischemica"
+ hidden=true
+ excludeReport = true
+
+ input {
+
+  table = "thematrix"
+
+  fields = [
+   /* Population level */
+   'DIST_MMG',
+   /* Local System levels */
+   'MMG',
+   /* Adjusters */
+   'SESSO',
+   'AGE_RANGE',
+   /* Chronic Diseases */
+   'HYPERTE',
+   'DIAB',
+   'IHD',
+   'HF',
+   'DEMEN',
+   /* Ischaemic heart disease */
+   /* Percentage of subjects above threshold */
+   /* Numerator */
+   'sum( \
+    ((( \
+     CASEWHEN(NUM_PROFLIP_IHD   is true and DEN_PROFLIP_IHD    is true,1.0,0.0)+ \
+     CASEWHEN(NUM_GLICEM_IHD     is true and DEN_GLICEM_IHD     is true,1.0,0.0)+ \
+     CASEWHEN(NUM_ANTIAGGREG_IHD is true and DEN_ANTIAGGREG_IHD is true,1.0,0.0)+ \
+     CASEWHEN(NUM_BETABLOC_IHD   is true and DEN_BETABLOC_IHD   is true,1.0,0.0)+ \
+     CASEWHEN(NUM_ACEINIB_IHD    is true and DEN_ACEINIB_IHD    is true,1.0,0.0)+ \
+     CASEWHEN(NUM_STATINE_IHD    is true and DEN_STATINE_IHD    is true,1.0,0.0)+ \
+     CASEWHEN(NUM_ECG_IHD        is true and DEN_ECG_IHD        is true,1.0,0.0)+ \
+     CASEWHEN(NUM_ERGOMETR_IHD   is true and DEN_ERGOMETR_IHD   is true,1.0,0.0) \
+    ) \
+    / \
+    nullif( \
+     CASEWHEN(DEN_PROFLIP_IHD,1.0,0.0)    + \
+     CASEWHEN(DEN_GLICEM_IHD,1.0,0.0)     + \
+     CASEWHEN(DEN_ANTIAGGREG_IHD,1.0,0.0) + \
+     CASEWHEN(DEN_BETABLOC_IHD,1.0,0.0)   + \
+     CASEWHEN(DEN_ACEINIB_IHD,1.0,0.0)    + \
+     CASEWHEN(DEN_STATINE_IHD,1.0,0.0)    + \
+     CASEWHEN(DEN_ECG_IHD,1.0,0.0)        + \
+     CASEWHEN(DEN_ERGOMETR_IHD,1.0,0.0)  \
+    ,0)))>0.60 is true) as NUM_HIGHSCORE_IHD',
+   /* Denominator */
+   'sum( \
+     ( \
+      CASEWHEN(DEN_PROFLIP_IHD,1.0,0.0)    + \
+      CASEWHEN(DEN_GLICEM_IHD,1.0,0.0)     + \
+      CASEWHEN(DEN_ANTIAGGREG_IHD,1.0,0.0) + \
+      CASEWHEN(DEN_BETABLOC_IHD,1.0,0.0)   + \
+      CASEWHEN(DEN_ACEINIB_IHD,1.0,0.0)    + \
+      CASEWHEN(DEN_STATINE_IHD,1.0,0.0)    + \
+      CASEWHEN(DEN_ECG_IHD,1.0,0.0)        + \
+      CASEWHEN(DEN_ERGOMETR_IHD,1.0,0.0) \
+     ) >0.00 ) as DEN_HIGHSCORE_IHD',
+   /* Row Count */
+   'count(*) as COUNT'
+  ]
+
+  groups = [
+   /* Population level */
+   'DIST_MMG',
+   /* Local System levels */
+   'MMG',
+   /* Adjusters */
+   'SESSO',
+   'AGE_RANGE',
+   /* Chronic Diseases */
+   'HYPERTE',
+   'DIAB',
+   'IHD',
+   'HF',
+   'DEMEN'
+  ]
+
+  file = "input.csv"
+ }
+}

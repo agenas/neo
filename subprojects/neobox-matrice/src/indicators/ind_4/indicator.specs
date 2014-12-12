@@ -1,0 +1,38 @@
+/*
+ * Copyright 2014 Fabrizio Carinci, AGENAS.
+ *
+ * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+ /**
+ * @author Fabrizio Carinci <carinci@agenas.it>
+ */
+
+/****************
+ Sezione 4
+*****************/
+
+indicator {
+
+  id = '4'
+
+  description = "Indicatori compositi"
+  description_en ="Composite indicators"
+
+  dependsOn = ['db_master',
+              'db_aveind_hyperte','db_aveind_diab','db_aveind_ihd','db_aveind_hf','db_aveind_demen',
+              'db_pctind_hyperte','db_pctind_diab','db_pctind_ihd','db_pctind_hf','db_pctind_demen',
+              'db_cost','db_discharge']
+  output {files = ["report.xml"]}
+
+}
