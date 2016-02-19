@@ -20,14 +20,15 @@
 
 include 'neobox-app'
 include 'neobox-matrice'
-include 'neobox-matrice-sample-data'
+include 'neobox-luna'
+include 'neobox-manual'
 
 rootProject.name = 'neobox'
-rootProject.children.each {project ->
-    String fileBaseName = project.name
-    String projectDirName = "subprojects/$fileBaseName"
-    project.projectDir = new File(settingsDir, projectDirName)
-    project.buildFileName = "build.gradle"
-    assert project.projectDir.isDirectory()
-    assert project.buildFile.isFile()
+rootProject.children.each { project ->
+  String fileBaseName = project.name
+  String projectDirName = "subprojects/$fileBaseName"
+  project.projectDir = new File(settingsDir, projectDirName)
+  project.buildFileName = "build.gradle"
+  assert project.projectDir.isDirectory()
+  assert project.buildFile.isFile()
 }

@@ -1,0 +1,123 @@
+/****************
+ Sezione Indicatori
+*****************/
+
+indicator {
+
+  id = '001'
+
+  description = "Indicatori LUNA"
+  description_en = "LUNA Indicators"
+
+  dependsOn = ['setup']
+
+  input {
+    table = "luna"
+
+    fields = [
+     /* Global level */
+      'liv3_regione',
+     /* Population level */
+      'liv2_asl',
+     /* Local System levels */
+      'liv1_zona',
+     /* Adjusters */
+      'genere',
+     /* Indicators */
+      'sum(i1a_num is true and i1a_den is true) as I1A_NUM',
+      'sum(i1a_den is true) as I1A_DEN',
+      'sum(i1b_num is true and i1b_den is true) as I1B_NUM',
+      'sum(i1b_den is true) as I1B_DEN',
+      'sum(i1c_num is true and i1c_den is true) as I1C_NUM',
+      'sum(i1c_den is true) as I1C_DEN',
+
+      'sum(i2a_num is true and i2a_den is true) as I2A_NUM',
+      'sum(i2a_den is true) as I2A_DEN',
+      'sum(i2b_num is true and i2b_den is true) as I2B_NUM',
+      'sum(i2b_den is true) as I2B_DEN',
+
+      'sum(i3a_num is true and i3a_den is true) as I3A_NUM',
+      'sum(i3a_den is true) as I3A_DEN',
+      'sum(i3b_num is true and i3b_den is true) as I3B_NUM',
+      'sum(i3b_den is true) as I3B_DEN',
+
+      'sum(i4a_num is true and i4a_den is true) as I4A_NUM',
+      'sum(i4a_den is true) as I4A_DEN',
+      'sum(i4b_num is true and i4b_den is true) as I4B_NUM',
+      'sum(i4b_den is true) as I4B_DEN',
+      'sum(i4c_num is true and i4c_den is true) as I4C_NUM',
+      'sum(i4c_den is true) as I4C_DEN',
+
+      'sum(i5a_num is true and i5a_den is true) as I5A_NUM',
+      'sum(i5a_den is true) as I5A_DEN',
+      'sum(i5b_num is true and i5b_den is true) as I5B_NUM',
+      'sum(i5b_den is true) as I5B_DEN',
+
+      'sum(i6a_num is true and i6a_den is true) as I6A_NUM',
+      'sum(i6a_den is true) as I6A_DEN',
+      'sum(i6b_num is true and i6b_den is true) as I6B_NUM',
+      'sum(i6b_den is true) as I6B_DEN',
+
+      'sum(i7a_num is true and i7a_den is true) as I7A_NUM',
+      'sum(i7a_den is true) as I7A_DEN',
+      'sum(i7b_num is true and i7b_den is true) as I7B_NUM',
+      'sum(i7b_den is true) as I7B_DEN',
+
+      'sum(i8a_num is true and i8a_den is true) as I8A_NUM',
+      'sum(i8a_den is true) as I8A_DEN',
+      'sum(i8b_num is true and i8b_den is true) as I8B_NUM',
+      'sum(i8b_den is true) as I8B_DEN',
+
+      'sum(i9a_num is true and i9a_den is true) as I9A_NUM',
+      'sum(i9a_den is true) as I9A_DEN',
+      'sum(i9b_num is true and i9b_den is true) as I9B_NUM',
+      'sum(i9b_den is true) as I9B_DEN',
+
+      'sum(i10a_num is true and i10a_den is true) as I10A_NUM',
+      'sum(i10a_den is true) as I10A_DEN',
+      'sum(i10b_num is true and i10b_den is true) as I10B_NUM',
+      'sum(i10b_den is true) as I10B_DEN',
+
+      'sum(i11a_num is true and i11a_den is true) as I11A_NUM',
+      'sum(i11a_den is true) as I11A_DEN',
+      'sum(i11b_num is true and i11b_den is true) as I11B_NUM',
+      'sum(i11b_den is true) as I11B_DEN',
+      'sum(i11c_num is true and i11c_den is true) as I11C_NUM',
+      'sum(i11c_den is true) as I11C_DEN',
+      'sum(i11d_num is true and i11d_den is true) as I11D_NUM',
+      'sum(i11d_den is true) as I11D_DEN',
+      'sum(i11e_num is true and i11e_den is true) as I11E_NUM',
+      'sum(i11e_den is true) as I11E_DEN',
+
+      'count(*) as COUNT'
+    ]
+
+    groups = [
+     /* Global level */
+      'liv3_regione',
+     /* Population level */
+      'liv2_asl',
+     /* Local System levels */
+      'liv1_zona',
+     /* Adjusters */
+      'genere'
+    ]
+
+    order = [
+     /* Global level */
+      'liv3_regione',
+     /* Population level */
+      'liv2_asl',
+     /* Local System levels */
+      'liv1_zona',
+     /* Adjusters */
+      'genere'
+    ]
+
+    file = "input.csv"
+  }
+
+  output {
+    files = ["report.xml"]
+  }
+}

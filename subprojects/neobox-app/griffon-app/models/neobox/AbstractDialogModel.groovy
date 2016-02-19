@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Stefano Gualdi, AGENAS.
+ * Copyright 2014-2016 Stefano Gualdi, AGENAS.
  *
  * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package neobox
+
+import griffon.transform.Observable
+import griffon.util.GriffonNameUtils
 
 /**
  * @author Stefano Gualdi <stefano.gualdi@gmail.com>
  */
- 
+
 abstract class AbstractDialogModel {
-    @Bindable String title
-    @Bindable int width = 0
-    @Bindable int height = 0
-    @Bindable boolean resizable = true
-    @Bindable boolean modal = true
+  @Observable
+  String title
+  @Observable
+  int width = 0
+  @Observable
+  int height = 0
+  @Observable
+  boolean resizable = true
+  @Observable
+  boolean modal = true
 
-    protected abstract String getDialogKey()
+  protected abstract String getDialogKey()
 
-    protected abstract String getDialogTitle()
+  protected abstract String getDialogTitle()
 
-    void mvcGroupInit(Map<String, Object> args) {
-        title = GriffonNameUtils.capitalize(app.getMessage('application.dialog.' + dialogKey + '.title', dialogTitle))
-    }
+  void mvcGroupInit(Map<String, Object> args) {
+    title = GriffonNameUtils.capitalize(application.messageSource.getMessage('application.dialog.' + dialogKey + '.title'))
+  }
 }

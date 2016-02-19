@@ -1,0 +1,128 @@
+<installation version="1.0">
+  <variables>
+    <variable name="appGroup" value="@{app.group}"/>
+    <variable name="appSubgroup" value="@{app.subgroup}"/>
+    <variable name="appTitle" value="@{app.title}"/>
+    <variable name="appSubPath" value="@{app.subpath}"/>
+    <variable name="appVersion" value="@{app.version}"/>
+
+    <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
+  </variables>
+
+  <native type="izpack" name="ShellLink.dll"/>
+  <native type="izpack" name="ShellLink_x64.dll"/>
+  <native type="3rdparty" name="COIOSHelper.dll" stage="both">
+    <os family="windows"/>
+  </native>
+
+  <info>
+    <javaversion>@{app.java.version}</javaversion>
+
+    <appname>@{app.title}</appname>
+    <appsubpath>@{app.subpath}</appsubpath>
+    <appversion>@{app.version}</appversion>
+
+    <url>http://www.agenas.it/neo</url>
+
+    <run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
+  </info>
+
+  <guiprefs width="800" height="600" resizable="yes">
+    <modifier key="allXGap" value="5"/>
+    <modifier key="allYGap" value="5"/>
+    <modifier key="paragraphYGap" value="15"/>
+    <modifier key="useHeadingPanel" value="yes"/>
+    <modifier key="headingLineCount" value="1"/>
+    <modifier key="headingFontSize" value="2"/>
+    <modifier key="headingBackgroundColor" value="0x00ffffff"/>
+    <modifier key="headingPanelCounter" value="text"/>
+    <modifier key="headingPanelCounterPos" value="inHeading"/>
+    <laf name="metouia">
+      <os family="unix"/>
+    </laf>
+  </guiprefs>
+
+  <variables>
+    <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
+    <variable name="ApplicationShortcutPath" value="ApplicationShortcuts"/>
+  </variables>
+
+  <locale>
+    <langpack iso3="eng"/>
+    <langpack iso3="ita"/>
+  </locale>
+
+  <resources>
+    <res id="neo.logo" src="resources/neobox-logo.png"/>
+    <res id="agenas.logo" src="resources/agenas-logo.png"/>
+
+    <res id="LicencePanel.licence" src="resources/EUPL-1.1.txt"/>
+
+    <res id="HTMLInfoPanel.info" src="resources/README.html"/>
+
+    <res id="TargetPanel.dir.windows" src="resources/target_windows.txt" parse="yes"/>
+    <res id="TargetPanel.dir.unix" src="resources/target_unix.txt" parse="yes"/>
+
+    <res id="Win_shortcutSpec.xml" src="resources/winShortcutSpec.xml"/>
+    <res id="Win_shortcutSpec.xml_ita" src="resources/winShortcutSpec_ita.xml"/>
+    <res id="Unix_shortcutSpec.xml" src="resources/unixShortcutSpec.xml"/>
+    <res id="Unix_shortcutSpec.xml_ita" src="resources/unixShortcutSpec_ita.xml"/>
+
+    <res id="shortcutSpec.xml" src="resources/emptyShortcutSpec.xml"/>
+
+    <res id="RegistrySpec.xml" src="resources/RegistrySpec.xml"/>
+  </resources>
+
+  <panels>
+    <panel classname="HelloPanel"/>
+    <panel classname="HTMLInfoPanel"/>
+    <panel classname="LicencePanel"/>
+    <panel classname="PacksPanel"/>
+    <panel classname="TargetPanel"/>
+    <panel classname="SummaryPanel"/>
+    <panel classname="InstallPanel"/>
+    <panel classname="ShortcutPanel"/>
+    <panel classname="FinishPanel"/>
+  </panels>
+
+  <listeners>
+    <listener installer="SummaryLoggerInstallerListener"/>
+    <listener installer="RegistryInstallerListener"
+              uninstaller="RegistryUninstallerListener">
+      <os family="windows"/>
+    </listener>
+  </listeners>
+
+  <packs>
+    <pack name="@{app.title}" required="yes">
+      <description>@{app.title} installation.</description>
+
+      <fileset dir="neobox" targetdir="$INSTALL_PATH"/>
+
+      <executable targetfile="$INSTALL_PATH/bin/neobox.bat" os="windows"/>
+      <executable targetfile="$INSTALL_PATH/bin/neobox" os="unix"/>
+
+      <file src="resources/pre-uninstall.bat" targetdir="$INSTALL_PATH/Uninstaller" os="windows"/>
+      <parsable targetfile="$INSTALL_PATH/Uninstaller/pre-uninstall.bat" os="windows"/>
+      <executable targetfile="$INSTALL_PATH/Uninstaller/pre-uninstall.bat" os="windows" stage="uninstall"/>
+    </pack>
+
+    <pack name="Documentation" required="no">
+      <description>User's guide.</description>
+
+      <fileset dir="neobox-manual" targetdir="$INSTALL_PATH/docs"/>
+    </pack>
+
+    <pack name="Matrice statistical pack" required="no">
+      <description>Statistical pack for Matrice.</description>
+
+      <file unpack="true" src="matrice-package/neobox-matrice.zip" targetdir="$INSTALL_PATH/packages" />
+    </pack>
+
+    <pack name="Matrice sample data" required="no">
+      <description>Sample data for Matrice.</description>
+
+      <fileset dir="matrice-sample-data" targetdir="$INSTALL_PATH/matrice-sample-data"/>
+    </pack>
+  </packs>
+</installation>

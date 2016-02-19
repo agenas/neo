@@ -1,0 +1,278 @@
+= Neo {neoboxversion}: Guida rapida
+2016-1-12
+:revnumber: 1.0.0
+:toc:
+:toclevels: 3
+:toc-title: Indice dei contenuti
+:figure-caption: Figura
+:sectnums:
+:experimental:
+
+ifndef::imagesdir[:imagesdir: images/quickstart]
+
+// Default width for images
+// :width100: 450
+:width100: 650
+:width50: 275
+:width25: 137
+
+// Dependencies versions
+:javaversion: 1.7
+:rversion: 3.0.1
+
+// Links
+:javalink: http://www.oracle.com/technetwork/java/javase/downloads/index.html
+:rlink: https://cran.r-project.org/bin/windows/base/old/{rversion}/
+:neoinstallerlink: https://github.com/agenas/neo/releases/download/v{neoboxversion}/neobox-installer-{neoboxversion}.jar
+
+// Document is in draft mode
+:draft-mode:
+
+ifdef::draft-mode[]
+
+<<<
+== Requisiti per l'installazione
+
+Neo, per la sua esecuzione, richiede che la macchina su cui viene installato contenga alcuni software come riassunto nella seguente tabella:
+
+|===
+| Componente | Versione minima | Scaricabile da
+
+| Java Virtual Machine
+| {javaversion}
+| {javalink}[download]
+
+| R
+| {rversion}
+| {rlink}[download]
+|===
+
+[WARNING]
+====
+I moduli statistici sono dipendenti dalla versione di R.
+L'utilizzo di una versione diversa da quella consigliata potrebbe portare a risultati imprevisti.
+Si consiglia pertanto di scaricare ed installare la versione indicata nella tabella precedente.
+====
+
+Una volta installate le dipendenze necessarie è possibile passare all'installazione di Neo.
+
+== Installazione
+
+Neo è fornito di un programma di installazione che predispone tutte le componenti necessarie sulla macchina di destinazione.
+
+Tali componenti sono:
+
+. il programma eseguibile di Neo
+. il pacchetto statistico di MATRICE
+. la documentazione (attualmente in versione preliminare)
+. il pacchetto con i dati di esempio per MATRICE
+
+Il programma di installazione è multi piattaforma e può essere eseguito
+sia su Microsoft Windows che su Linux; può essere scaricato dal seguente link:
+
+`{neoinstallerlink}`
+
+[NOTE]
+====
+Il presente documento descrive l'installazione su Microsoft Windows
+====
+
+L'installazione guida l'utente durante tutte le fasi del processo.
+E' possibile omettere alcune delle componenti ma in una fase iniziale è raccomandabile eseguire un'installazione completa.
+In questo modo si avranno a disposizione anche i dati di test e sarà possibile eseguire delle prove per verificare che tutto funzioni correttamente.
+
+Il programma di installazione provvede anche alla creazione di una icona sul desktop e di un gruppo nel menu start di windows.
+
+=== Layout della cartella di installazione
+
+Come impostazione predefinita tutto il software viene installato nella cartella `C:\NeoBox-{neoboxversion}`.
+
+[NOTE]
+====
+E' consigliabile non modificare la cartella di installazione predefinita almeno nelle prime installazioni.
+Questo faciliterà eventuali azioni di supporto da parte dello staff tecnico.
+====
+
+A sequito dell'installazione la cartella di destinazione presenta la seguente organizzazione
+(alcune cartelle che contengono informazioni ad uso interno sono state omesse dal seguente schema):
+
+[source, indent=0, subs="attributes,verbatim"]
+----
+C:\NeoBox-{neoboxversion} // <1>
+├─docs // <2>
+├─matrice-sample-data // <3>
+└─packages // <4>
+  └─neobox-matrice-{neoboxmatriceversion} // <5>
+    ├─import // <6>
+    └─indicators // <7>
+----
+
+<1> Cartella principale di installazione
+<2> Documentazione in formato PDF e HTML
+<3> Dati di esempio per MATRICE
+<4> Cartella principale del pacchetti statistici
+<5> Pacchetto statistico MATRICE
+<6> Specifiche di import per MATRICE
+<7> Moduli del pacchetto statistico MATRICE
+
+==== Pacchetto statistico MATRICE
+
+Questa cartella contiene le specifiche di import necessarie all'importazione del file prodotto da TheMatrix e tutti i moduli statistici del progetto MATRICE.
+
+==== Dati di esempio
+
+Questo cartella contiene dei dati di esempio del progetto MATRICE.
+E' utile nel caso in cui si voglia verificare il funzionamento del software se non si è ancora in possesso del file CSV prodotto da TheMatrix.
+
+== Uso del software
+
+Questa sezione spiega come eseguire un lancio del programma per ottenere il report finale.
+
+=== Configurazione
+
+Il tab btn:[Configurazione] permette di valorizzare i seguenti campi:
+
+* *Codice operatore*: inserire il proprio codice ASL
+* *Anno*: inserire le quattro cifre che indicano l'anno a cui si riferiscono i dati (per i dati di esempio utilizzare 2012)
+
+[WARNING]
+====
+E' importante che il codice operatore sia composto da 6 cifre: 3 codice regione e 3 codice ASL (es: 030302)
+altrimenti theOracle non sarà in grado di associare correttamente il file trasmesso.
+====
+
+Oltre alla configurazione dei campi, nel tab btn:[Configurazione] è presente la lista di tutte le tabelle già importate;
+per ognuna è indicato il numero di record presenti.
+
+.Tab configurazione
+image::neobox-config.png[width={width100}]
+
+=== Importazione
+
+Il tab btn:[Importazione] permette di configurare ed eseguire l'importazione dei dati nel database interno di Neo.
+
+.Tab importazione
+image::neobox-import.png[width={width100}]
+
+I campi da valorizzare sono:
+
+* *File CSV TheMatrix*: navigare il file system fino a selezionare il file Sperim_20121231_6_PerNeoNOSOCIAL.csv della cartella -results- dell'installazione di TheMatrix
+* *Specifiche di import*: selezionare il file `import.specs` nella cartella `C:\NeoBox-{neoboxversion}\packages\neobox-matrice-{neoboxmatriceversion}\import`
+* *File distretti*: selezionate il proprio file distretti
+
+Con la pressione del pulsante btn:[Importa] viene avviata la procedura di importazione; al termine della stessa
+tutti i dati saranno caricati nel database interno e disponibili per la fase di analisi.
+
+[NOTE]
+====
+A seconda del numero di record presenti nel file da importare l'esecuzione potrebbe richiedere anche qualche ora.
+Un indicatore di progresso mostrerà il numero dei record in corso di importazione.
+====
+
+==== Uso dei dati di prova
+
+Nel caso in cui non si abbia accesso a file reali è possibile utilizzare i dati di prova installati con il software:
+
+[cols="20,80", options="noheader"]
+|===
+
+| File CSV theMatrix
+| `C:\NeoBox-{neoboxversion}\matrice-sample-data\testdata_thematrix.csv`
+
+| File distretti
+| `C:\NeoBox-{neoboxversion}\matrice-sample-data\testdata_distretti.csv`
+
+|===
+
+In questo modo sarà possibile testare il programma e verificare la corretta installazione di tutte le componenti.
+
+<<<
+[[analisi]]
+=== Analisi
+
+Il tab btn:[Analisi] permette di definire i parametri necessari all'analisi statistica.
+
+.Tab analisi
+image::neobox-analysis.png[width={width100}]
+
+I dati richiesti sono:
+
+* *Cartella indicatori*: selezionare la cartella `indicators` al percorso `C:\NeoBox-{neoboxversion}\packages\neobox-matrice-{neoboxmatriceversion}`
+* *Cartella di lavoro*: selezionare una qualsiasi directory, in cui verranno salvati i dati intermedi ed il report finale
+
+Una volta definiti i parametri sopra indicati saranno mostrati tutti i moduli disponibili nel pacchetto statistico selezionato.
+Per avviare l'analisi selezionare tutti i moduli nella finestra "Moduli disponibili" e premere il pulsante btn:[Esegui analisi].
+Al termine del processo, nella cartella di lavoro selezionata, sarà disponibile il report in formato PDF.
+
+[NOTE]
+====
+A seconda del numero di indicatori e della loro complessità l'esecuzione potrebbe richiedere diverso tempo.
+====
+
+==== La cartella di lavoro
+
+La fase di analisi popola la cartella di lavoro con tutti i dati temporanei creati dalle procedure statistiche e con il report in formato PDF.
+
+La struttura della cartella di lavoro, dopo una elaborazione, è simile alla seguente:
+
+[source, indent=0, subs="attributes,verbatim"]
+----
+C:\lavoro
+└─SINGLE // <1>
+  ├─1 // <2>
+  ├─2
+  ├─..
+  ├─N
+  ├─output // <3>
+  └─report
+    └─report.pdf // <4>
+----
+
+<1> Base della cartella risultati
+<2> Dati parziali di ogni singolo modulo statistico
+<3> Dati aggregati per l'invio al server centrale
+<4> File contenente il report in formato PDF
+
+<<<
+=== Invio dei dati al server centrale
+
+Una volta che è stata completata l'esecuzione dei moduli, in particolare del modulo "output", è possibile spostarsi nel tab btn:[Trasferimento].
+
+Da questa posizione è possibile iniziare il trasferimento dei dati processati verso il server centrale di Agenas.
+
+.Tab trasferimento
+image::neobox-transfer.png[width={width100}]
+
+I passi da eseguire per un corretto trasferimento sono:
+
+. Compilare il campo Server con i seguenti dati:
+.. *Server*: <dato comunicato da agenas>
+.. *Nome utente*: <dato comunicato da agenas>
+.. *Password*: <dato comunicato da agenas>
+
+. Indicare nel campo "Cartella di lavoro" la stessa directory che era stata indicata nel campo "Cartella di lavoro" del tab btn:[Analisi] come descritto nella sezione <<analisi>>. Se l'operazione di esecuzione è stata eseguita senza uscire da Neo questo campo risulterà già compilato.
+. Premere il bottone btn:[Aggiorna], questo causa la scansione della directory di lavoro specificata e la visualizzazione, nella lista sottostante, di tutti i files idonei al trasferimento.
+. Selezionare i file che si desidera inviare al server centrale.
+. Premere il pulsante btn:[Trasferisci]
+
+[NOTE]
+====
+* I campi `Server`, `Nome utente` e `Password` possono essere ottenuti dal supporto tecnico Agenas.
+* Se si hanno problemi di connessione e la procedura di trasferimento fallisce selezionare il flag "Usa connessione FTP attiva" e ritentare.
+* Tutti i file sono file zip, contenenti file csv, che possono essere aperti ed esaminati prima dell'invio. Essi contengono esclusivamente dati aggregati e sono privi di dati sensibili.
+====
+
+<<<
+== FAQ
+
+Alla pressione del tasto btn:[Aggiorna] nel tab btn:[Trasferimento] non viene visualizzato alcun file::
+I file vengono prodotti dal modulo *output*. E' necessario eseguirlo per poter generare i file ZIP da inviare.
+
+Il trasferimento dei file al server centrale continua a fallire::
+Per poter eseguire con successo il trasferimento verso il server Agenas è necessario che la rete locale permetta la connessione su server esterni
+tramite protocollo FTP.
+
+[TIP]
+====
+Verificare con il proprio supporto IT che sia consentito il traffico sulle porte 21 e 22.
+====

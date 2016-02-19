@@ -1,0 +1,390 @@
+/*
+ * Copyright 2014-2016 Stefano Gualdi, AGENAS.
+ *
+ * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+ /**
+ * @author Stefano Gualdi <stefano.gualdi@gmail.com>
+ */
+
+master {
+    'LUNA' {
+        label = "Master file"
+        mandatory = true
+
+        fields {
+            'id_soggetto' {
+                type = "varchar"
+                size = 16
+                label = "Identificativo unico del soggetto"
+            }
+
+            'liv1_zona' {
+                type = "varchar"
+                size = 10
+                label = "Zona di erogazione"
+            }
+
+            'liv2_asl' {
+                type = "varchar"
+                size = 10
+                label = "Asl di erogazione"
+            }
+
+            'liv3_regione' {
+                type = "varchar"
+                size = 10
+                label = "Regione di erogazione"
+            }
+
+            // RANGE: aaaa-mm-dd
+            'data_nascita' {
+                type = "varchar"
+                size = 10
+                label = "Data di nascita del soggetto"
+            }
+
+            // RANGE: M,F
+            'genere' {
+                type = "varchar"
+                size = 1
+                label = "Genere della persona"
+            }
+
+            // RANGE: 0.1
+            'i1a_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I1A"
+            }
+
+            // RANGE: 0.1
+            'i1a_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I1A"
+            }
+
+            // RANGE: 0.1
+            'i1b_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I1B"
+            }
+
+            // RANGE: 0.1
+            'i1b_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I1B"
+            }
+
+            // RANGE: 0.1
+            'i1c_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I1C"
+            }
+
+            // RANGE: 0.1
+            'i1c_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I1C"
+            }
+
+            // RANGE: 0.1
+            'i2a_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I2A"
+            }
+
+            // RANGE: 0.1
+            'i2a_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I2A"
+            }
+
+            // RANGE: 0.1
+            'i2b_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I2B"
+            }
+
+            // RANGE: 0.1
+            'i2b_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I2B"
+            }
+
+            // RANGE: 0.1
+            'i3a_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I3B"
+            }
+
+            // RANGE: 0.1
+            'i3a_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I3B"
+            }
+
+            // RANGE: 0.1
+            'i3b_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I3B"
+            }
+
+            // RANGE: 0.1
+            'i3b_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I3B"
+            }
+
+            'i4a_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I4A"
+            }
+
+            // RANGE: 0.1
+            'i4a_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I4A"
+            }
+
+            'i4b_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I4B"
+            }
+
+            // RANGE: 0.1
+            'i4b_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I4B"
+            }
+
+            'i4c_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I4C"
+            }
+
+            // RANGE: 0.1
+            'i4c_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I4C"
+            }
+
+            'i5a_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I5A"
+            }
+
+            'i5a_den' {
+                type = "decimal"
+                label = "Denominatore indicatore I5A"
+            }
+
+            'i5b_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I5B"
+            }
+
+            'i5b_den' {
+                type = "decimal"
+                label = "Denominatore indicatore I5B"
+            }
+
+            'i6a_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I6A"
+            }
+
+            'i6a_den' {
+                type = "decimal"
+                label = "Denominatore indicatore I6A"
+            }
+
+            'i6b_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I6B"
+            }
+
+            'i6b_den' {
+                type = "decimal"
+                label = "Denominatore indicatore I6B"
+            }
+
+            // RANGE: 0-30
+            'i7a_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I7A"
+            }
+
+            // RANGE: 0.1
+            'i7a_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I7A"
+            }
+
+            // RANGE: 0.1
+            'i7b_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I7B"
+            }
+
+            // RANGE: 0.1
+            'i7b_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I7B"
+            }
+
+            // RANGE: 0.1
+            'i8a_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I8A"
+            }
+
+            // RANGE: 0.1
+            'i8a_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I8A"
+            }
+
+            // RANGE: 0.1
+            'i8b_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I8B"
+            }
+
+            // RANGE: 0.1
+            'i8b_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I8B"
+            }
+
+            // RANGE: 0.1
+            'i9a_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I9A"
+            }
+
+            // RANGE: 0.1
+            'i9a_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I9A"
+            }
+
+            // RANGE: 0.1
+            'i9b_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I9B"
+            }
+
+            // RANGE: 0.1
+            'i9b_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I9B"
+            }
+
+            // RANGE: 0.1
+            'i10a_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I10A"
+            }
+
+            // RANGE: 0.1
+            'i10a_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I10A"
+            }
+
+            // RANGE: 0.1
+            'i10b_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I10B"
+            }
+
+            // RANGE: 0.1
+            'i10b_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I10B"
+            }
+
+            'i11a_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I11A"
+            }
+
+            'i11a_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I11A"
+            }
+
+            'i11b_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I11B"
+            }
+
+            'i11b_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I11B"
+            }
+
+            'i11c_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I11C"
+            }
+
+            'i11c_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I11C"
+            }
+
+            'i11d_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I11D"
+            }
+
+            'i11d_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I11D"
+            }
+
+            'i11e_num' {
+                type = "smallint"
+                label = "Numeratore indicatore I11E"
+            }
+
+            'i11e_den' {
+                type = "smallint"
+                label = "Denominatore indicatore I11E"
+            }
+        }
+        /**
+         * Calculated fields
+         *
+         * Alla closure "value" vengono passati due oggetti:
+         * - record = Map contenente tutti campi del record (compresi quelli già calcolati)
+         * - context = Map contenente eventuali variabili necessarie ai calcoli (es: anno corrente)
+         */
+        calculatedFields {
+            'BIRTH_DATE' {
+                persist = true
+                type = "date"
+                value = { record, context ->
+                    try {
+                        Date.parse("yyyy-MM-dd", record['data_nascita'])
+                    }
+                    catch(Exception) {
+                        null
+                    }
+                }
+            }
+        }
+    }
+}

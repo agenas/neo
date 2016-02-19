@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Stefano Gualdi, AGENAS.
+ * Copyright 2014-2016 Stefano Gualdi, AGENAS.
  *
  * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,36 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package neobox
 
+import griffon.core.artifact.GriffonView
+import griffon.metadata.ArtifactProviderFor
+import griffon.util.GriffonNameUtils
+import groovy.util.logging.Slf4j
 import java.awt.Font
 
 /**
  * @author Stefano Gualdi <stefano.gualdi@gmail.com>
  */
+@Slf4j
+@ArtifactProviderFor(GriffonView)
+class AboutView {
+  FactoryBuilderSupport builder
+  NeoboxModel model
+  def content
 
-rowConstraints = "center, span 1, wrap".toString()
+  void initUI() {
+    content = builder.with {
+      //def rowConstraints = "center, span 1, wrap".toString()
+      def rowConstraints = "center, wrap".toString()
 
-panel(id: 'content') {
-    migLayout layoutConstraints: 'fill'
-    label(icon: imageIcon('/neobox-icon-128x128.png'), constraints: "center, span 1, wrap".toString())
-    label(GriffonNameUtils.capitalize(app.getMessage('application.title', app.config.application.title)) +
-            ' ' + Metadata.current.getApplicationVersion(),
-            font: current.font.deriveFont(Font.BOLD),
-            constraints: rowConstraints)
-    label(text: bind { model.description }, constraints: rowConstraints)
+      panel(id: 'content') {
+        migLayout layoutConstraints: 'fill'
 
-    scrollPane(preferredSize: [420, 80], constraints: rowConstraints) {
-        table {
+        label(icon: imageIcon('/neobox-icon-128x128.png'), constraints: rowConstraints)
+
+        label(GriffonNameUtils.capitalize(application.messageSource.getMessage('application.title')) +
+          ' ' + application.configuration['application.version'],
+          font: current.font.deriveFont(Font.BOLD),
+          constraints: rowConstraints)
+
+        label(text: bind { model.description }, constraints: rowConstraints)
+
+        scrollPane(preferredSize: [420, 80], constraints: rowConstraints) {
+          table {
             tableFormat = defaultTableFormat(columnNames: ['Name', 'Task', 'Language'])
             eventTableModel(source: model.authors, format: tableFormat)
             installTableComparatorChooser(source: model.authors)
+          }
         }
-    }
 
-    keyStrokeAction(component: current,
-            keyStroke: 'ESCAPE',
-            condition: 'in focused window',
-            action: hideAction)
+        keyStrokeAction(component: current,
+          keyStroke: 'ESCAPE',
+          condition: 'in focused window',
+          action: hideAction)
+      }
+    }
+  }
 }

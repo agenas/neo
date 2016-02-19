@@ -1,0 +1,1241 @@
+/*
+ * Copyright 2014 Stefano Gualdi, AGENAS.
+ *
+ * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+ /**
+ * @author Stefano Gualdi <stefano.gualdi@gmail.com>
+ */
+
+master {
+    'THEMATRIX' {
+        label = "Master file"
+        mandatory = true
+
+        /**
+         * Context data
+         */
+        /*
+        context {
+            'CUR_YEAR' {
+                type = "integer" // integer | decimal | string
+                label = "Anno corrente"
+                mandatory = true
+            }
+        }
+        */
+
+        /**
+         * Fields descriptor
+         */
+        fields {
+            // Data a cui si riferiscono i dati contenuti nel dataset
+            // NOTE: E’ possibile generare un dataset che si riferisce a come risultavano gli assistiti in una data passata, risalendo fino ai primi anni in cui risultano disponibili i flussi
+            'DATA' {
+                type = "varchar"
+                size = 10
+            }
+
+            // Data cui è aggiornato il dataset
+            // NOTE: Per costruire il dataset alla data DATA possiamo usare anche informazioni raccolte successivamente: questa è la data dell’ultimo aggiornamento del database aziendale/regionale disponibile al momento della generazione del dataset; per esempio si può vedere la mortalità a 5 anni di pazienti che avevano certe condizioni 5 anni fa (allora si pone DATA_AGG: oggi, DATA: 5 anni fa)
+            'DATA_AGG' {
+                type = "varchar"
+                size = 10
+            }
+
+            // Identificativo univoco dell’assistito
+            // NOTE: Il dataset viene generato per tutti gli assistiti, anche quelli sani, che sono in carico all’azienda alla data DATA (variabile IN_CARICO  uguale a 1) o alla data DATA-12M (IN_CARICO12M uguale a 1)
+            'ID_SOGGETTO' {
+                type = "varchar"
+                size = 50
+            }
+
+            // Data di nascita
+            // NOTE: documentata nell’anagrafe alla data DATA_AGG
+            'DATA_NASCITA' {
+                type = "varchar"
+                size = 10
+            }
+
+            // Sesso
+            // RANGE: M, F
+            // NOTE: documentato nell’anagrafe alla data DATA_AGG
+            'SESSO' {
+                type = "varchar"
+                size = 1
+            }
+
+            // Cittadinanza
+            // RANGE: codifica ISTAT
+            // NOTE: documentata nell’anagrafe alla data DATA
+            'CITTADINANZA' {
+                type = "smallint"
+            }
+
+            // Distretto di residenza dell'assistito
+            // NOTE: questo campo non fa parte dei flussi amministrativi; la codifica è scelta localmente dalla UO
+            'DISTRETTO_RESIDENZA' {
+                type = "varchar"
+                size = 30
+            }
+
+            // Distretto in cui opera il MMG dell'assitito (MMG_12M)
+            // NOTE: questo campo non fa parte dei flussi amministrativi; la codifica è scelta localmente dalla UO
+            'DISTRETTO_MMG' {
+                type = "varchar"
+                size = 30
+            }
+
+            // Comune di residenza
+            // RANGE: codifica ISTAT
+            // NOTE: documentato nell’anagrafe alla data DATA
+            'COMUNE' {
+                type = "varchar"
+                size = 10
+            }
+
+            // Densità del comune COMUNE (ab/kmq)
+            // NOTE: Dato ricavato da incrocio con tabella ISTAT
+            'DENSITA_COMUNE' {
+                type = "smallint"
+            }
+
+            // Indirizzo di residenza
+            // NOTE: documentato nell’anagrafe alla data DATA
+            'INDIRIZZO' {
+                type = "varchar"
+                size = 255
+            }
+
+            // Sezione di censimento ISTAT
+            // NOTE: associato a INDIRIZZO, dato calcolabile solo se INDIRIZZO è in formato normale ed è disponibile la tabella di decodifica indirizzi/sezioni
+            /*
+            'SEZIONE' {
+                type = "varchar"
+                size = 10
+            }
+            */
+
+            // Indice di deprivazione
+            // NOTE: Dato disponibile solo se è disponibile SEZIONE
+            'INDICE_DEPRIVAZ' {
+                type = "smallint"
+            }
+
+            // Codice del medico che ha in carico il paziente alla data DATA
+            'MMG' {
+                type = "varchar"
+                size = 50
+            }
+
+            // Data a partire dalla quale MMG ha in carico l’assistito
+            'DATA_MMG' {
+                type = "varchar"
+                size = 10
+            }
+
+            // Codice del medico che ha in carico il paziente alla data DATA-12 mesi
+            // NOTE: Se il medico 12 mesi prima era diverso si può usare questo dato per attribuire al MMG precedente la qualità della cura prestata nei 12 mesi di followup
+            'MMG_12M' {
+                type = "varchar"
+                size = 8
+            }
+
+            // Identificativo della forma associativa di cui fa parte il medico MMG_12 alla data DATA-12 mesi
+            // NOTE: questo campo non fa parte dei flussi amministrativi; la codifica è scelta localmente dalla UO
+            'NOME_FORMAASSOCIATIVA' {
+                type = "varchar"
+                size = 50
+            }
+
+            // Tipologia della forma associativa NOME_FORMAASSOCIATIVA
+            // RANGE: ASSOCIAZIONE, RETE, GRUPPO
+            // NOTE: questo campo non fa parte dei flussi amministrativi
+            'TIPO_FORMAASSOCIATIVA' {
+                type = "varchar"
+                size = 20
+            }
+
+            // Data in cui l’assistito è entrato in carico alla ASL/regione
+            // NOTE: come documentato dall’anagrafe alla DATA_AGG
+            'DATA_INGRESSO' {
+                type = "varchar"
+                size = 10
+            }
+
+            // Data in cui l’assistito ha lasciato la ASL/regione
+            // NOTE: come documentato dall’anagrafe alla DATA_AGG. Se l’assistito risulta ancora in carico: missing
+            'DATA_USCITA' {
+                type = "varchar"
+                size = 10
+            }
+
+            // Data di decesso dell’assistito
+            // NOTE: Come documentato dall’anagrafe alla DATA_AGG. Se l’assistito risulta in vita: missing
+            'DATA_MORTE' {
+                type = "varchar"
+                size = 10
+            }
+
+            // Vale 1 se l’assistito risulta in carico alla ASL/regione alla data DATA
+            // RANGE: 0 o 1
+            // NOTE: Serve per calcolare il denominatore delle prevalenze alla data DATA
+            'IN_CARICO' {
+                type = "boolean"
+            }
+
+            // Vale 1 se l’assistito risulta in carico alla ASL/regione alla data DATA-12 mesi
+            // RANGE: 0 o 1
+            // NOTE: Serve per calcolare il denominatore delle prevalenze alla data in cui si comincia il follow up per l’adesione alle linee guiida
+            'IN_CARICO12M' {
+                type = "boolean"
+            }
+
+            // numero di esenzioni per patologia attive alla data DATA
+            'NUM_ESENZIONI' {
+                type = "smallint"
+            }
+
+            // Data in cui l’assistito è risultato positivo per l’agoritmo di riconoscimento del diabete
+            // NOTE: Se l’assistito non è mai risultato positivo: missing
+            'DATA_DIAGN_DIAB' {
+                type = "varchar"
+                size = 10
+            }
+
+            // Fonti dalle quali è stato identificato il diabete
+            // NOTE: Il valore è una stringa costituita da una combinazione separata da spazi dei nomi delle tabelle di IAD (HOSP; EXE, DRUGS, DDRUG eccetera), per esempio un soggetto che è stato identificato sia dalle esenzioni (EXE) che dal flusso dei farmaci a erogazione indiretta (DRUGS) avrà come valore "EXE DRUGS". Si consiglia di elaborare questa variabile tramite funzioni di matching di stringhe
+            'FONTI_DIAB' {
+                type = "varchar"
+                size = 255
+            }
+
+            // Stadio del diabete cui risulta il paziente alla data DATA
+            // RANGE: diab1a diab1b diab2a diab2b
+            // NOTE: Se DATA_DIAGN_DIAB è missing: missing
+            'STADIO_DIAB' {
+                type = "varchar"
+                size = 10
+            }
+
+            // Stadio del diabete cui il paziente risulta alla data DATA-12 mesi
+            // RANGE: diab1a diab1b diab2a diab2b
+            // NOTE: Questo dato serve per calcolare gli indicatori che richiedono un followup di 12 mesi, se DATA_DIAGN_DIAB è missing: missing
+            'STADIO_DIAB_12M' {
+                type = "varchar"
+                size = 10
+            }
+
+            // Vale 1 se l’assistito risulta esente per diabete alla data DATA
+            'ESENZIONE_DIAB' {
+                type = "boolean"
+            }
+
+            // Data in cui l’assistito è risultato positivo per l’agoritmo di riconoscimento dell’ipertensione
+            'DATA_DIAGN_HYPERTE' {
+                type = "varchar"
+                size = 10
+            }
+
+            // Fonti dalle quali è stata identificata l'ipertensione
+            // NOTE: Il valore è una stringa costituita da una combinazione separata da spazi dei nomi delle tabelle di IAD (HOSP; EXE, DRUGS, DDRUG eccetera), per esempio un soggetto che è stato identificato sia dalle esenzioni (EXE) che dal flusso dei farmaci a erogazione indiretta (DRUGS) avrà come valore "EXE DRUGS". Si consiglia di elaborare questa variabile tramite funzioni di matching di stringhe
+            'FONTI_HYPERTE' {
+                type = "varchar"
+                size = 255
+            }
+
+            // Stadio di ipertensione cui risulta il paziente alla data DATA
+            // RANGE: hyperte1 hyperte2a hyperte2b
+            'STADIO_HYPERTE' {
+                type = "varchar"
+                size = 10
+            }
+
+            // Stadio di ipertensione cui il paziente risulta alla data DATA-12 mesi
+            // RANGE: hyperte1 hyperte2a hyperte2b
+            // NOTE: Questo dato serve per calcolare gli indicatori che richiedono un followup di 12 mesi
+            'STADIO_HYPERTE_12M' {
+                type = "varchar"
+                size = 10
+            }
+
+            // Vale 1 se l’assistito risulta esente per ipertensione alla data DATA
+            'ESENZIONE_HYPERTE' {
+                type = "boolean"
+            }
+
+            // Data in cui l’assistito è risultato positivo per l’agoritmo di riconoscimento della cardiopatia ischemica
+            // NOTE: se mai positivo: missing
+            'DATA_DIAGN_IHD' {
+                type = "varchar"
+                size = 10
+            }
+
+            // Fonti dalle quali è stata identificata la cardiopatia ischemica
+            // NOTE: Il valore è una stringa costituita da una combinazione separata da spazi dei nomi delle tabelle di IAD (HOSP; EXE, DRUGS, DDRUG eccetera), per esempio un soggetto che è stato identificato sia dalle esenzioni (EXE) che dal flusso dei farmaci a erogazione indiretta (DRUGS) avrà come valore "EXE DRUGS". Si consiglia di elaborare questa variabile tramite funzioni di matching di stringhe
+            'FONTI_IHD' {
+                type = "varchar"
+                size = 255
+            }
+
+            // Stadio di cardiopatia ischemica cui risulta il paziente alla data DATA
+            // RANGE: IHD1a IHD1b IHD2a IHD2b IHD3
+            'STADIO_IHD' {
+                type = "varchar"
+                size = 10
+            }
+
+            // Stadio di cardiopatia ischemica cui il paziente risulta alla data DATA-12 mesi
+            // RANGE: IHD1a IHD1b IHD2a IHD2b IHD3
+            // NOTE: Questo dato serve per calcolare gli indicatori che richiedono un followup di 12 mesi
+            'STADIO_IHD_12M' {
+                type = "varchar"
+                size = 10
+            }
+
+            // Vale 1 se l’assistito risulta esente per cardiopatia ischemica alla data DATA
+            'ESENZIONE_IHD' {
+                type = "boolean"
+            }
+
+            // Data in cui l’assistito è risultato positivo per l’agoritmo di riconoscimento dell’insufficienza cardiaca
+            // NOTE: se mai positivo: missing
+            'DATA_DIAGN_HF' {
+                type = "varchar"
+                size = 10
+            }
+
+            'STADIO_HF' {
+                type = "varchar"
+                size = 10
+            }
+
+            'STADIO_HF_12M' {
+                type = "varchar"
+                size = 10
+            }
+
+            // Fonti dalle quali è stata identificata l'insufficienza cardiaca
+            // NOTE: Il valore è una stringa costituita da una combinazione separata da spazi dei nomi delle tabelle di IAD (HOSP; EXE, DRUGS, DDRUG eccetera), per esempio un soggetto che è stato identificato sia dalle esenzioni (EXE) che dal flusso dei farmaci a erogazione indiretta (DRUGS) avrà come valore "EXE DRUGS". Si consiglia di elaborare questa variabile tramite funzioni di matching di stringhe
+            'FONTI_HF' {
+                type = "varchar"
+                size = 255
+            }
+
+            // Vale 1 se l’assistito risulta esente per insufficienza cardiaca alla data DATA
+            'ESENZIONE_HF' {
+                type = "boolean"
+            }
+
+            // data in cui la prima prescrizione di farmaci anticolinesterasici è stata erogata
+            // NOTE: viene valorizzato solo se il soggetto ha ricevuto almeno una volta due prescrizioni in un anno distanziate da almeno 180 giorni, altrimenti missing
+            'DATA_PRIMA_PRESCR_ANTICOLIN' {
+                type = "varchar"
+                size = 10
+            }
+
+            // vale 1 se l’assistito ha ricevuto almeno una prescrizione di farmaci anticolinesterasici nei 12 mesi precedenti alla data DATA
+            // NOTE: viene valorizzato solo se DATA_PRIMA_PRESCR_ANTICOLIN non e’ missing, si interpreta così: vale 1 se durante il follow up (da DATA-12M a DATA) l’assistito era in terapia con anticolinesterasici
+            'ANTICOLIN_12M' {
+                type = "varchar"
+                size = 10
+            }
+
+            // vale 1 se l’assistito ha ricevuto almeno una prescrizione di farmaci anticolinesterasici nei 12 mesi precedenti alla data DATA-12M
+            // NOTE: viene valorizzato solo se DATA_PRIMA_PRESCR_ANTICOLIN non e’ missing, si interpreta così: vale 1 se  al momento dell’inizio del follow up (DATA-12M) l’assistito era in terapia con anticolinesterasici
+            'ANTICOLIN_24M' {
+                type = "boolean"
+            }
+
+            // data in cui la prima prescrizione di memantina è stata erogata
+            // NOTE: viene valorizzato solo se il soggetto ha ricevuto almeno una volta due prescrizioni in un anno distanziate da almeno 180 giorni
+            'DATA_PRIMA_PRESCR_MEMANT' {
+                type = "varchar"
+                size = 10
+            }
+
+            // Tariffa lorda per consumo di farmaci nei 12 mesi precedenti la data DATA
+            'TARIFFA_LORDO_FARMACI' {
+                type = "decimal"
+            }
+
+            // Tariffa lorda per ospedalizzazione in reparti per acuti (quindi non lungodegenti né riabilitazione) in regime ordinario con DRG medico  nei 12 mesi precedenti la data DATA
+            'TARIFFA_LORDO_OSPACDRGMED' {
+                type = "decimal"
+            }
+
+            // Tariffa lorda per ospedalizzazione in reparti per acuti (quindi non lungodegenti né riabilitazione) in regime ordinario con DRG chirurgico nei 12 mesi precedenti la data DATA
+            'TARIFFA_LORDO_OSPACDRGCHIR' {
+                type = "decimal"
+            }
+
+            // Tariffa lorda per ospedalizzazione in reparti postacuti  (lungodegenti o riabilitazione) in regime ordinario nei 12 mesi precedenti la data DATA
+            'TARIFFA_LORDO_OSPNAC' {
+                type = "decimal"
+            }
+
+            // Tariffa lorda per ospedalizzazione in day hospital con DRG medico nei 12 mesi precedenti la data DATA
+            'TARIFFA_LORDO_OSPDHDRGMED' {
+                type = "decimal"
+            }
+
+            // Tariffa lorda per ospedalizzazione in day hospital con DRG chirurgico nei 12 mesi precedenti la data DATA
+            'TARIFFA_LORDO_OSPDHDRGCHIR' {
+                type = "decimal"
+            }
+
+            // Tariffa lorda per ospedalizzazione in day hospital con in reparti postacuti (lungidegenza o riabilitazione) nei 12 mesi precedenti la data DATA
+            'TARIFFA_LORDO_OSPDHPOSTACUTO' {
+                type = "decimal"
+            }
+
+            // Taroffa lorda pr visite specialistiche
+            'TARIFFA_LORDO_VISITE' {
+                type = "decimal"
+            }
+
+            // tariffa lorda per diagnostica strumentale
+            'TARIFFA_LORDO_DIA_STRUM' {
+                type = "decimal"
+            }
+
+            // Tariffa lorda per diagnostica per immagini
+            'TARIFFA_LORDO_DIA_IMM' {
+                type = "decimal"
+            }
+
+            // Tariffa lorda per diagnostica di laboratorio
+            'TARIFFA_LORDO_DIA_LAB' {
+                type = "decimal"
+            }
+
+            // Tariffa lorda per altri consumi nei 12 mesi precedenti la data DATA
+            'TARIFFA_LORDO_ALTRO' {
+                type = "decimal"
+            }
+
+            // numero di prescrizioni di farmaci nei 12 mesi precedenti la data DATA
+            'NUM_PRESC_FARM' {
+                type = "smallint"
+            }
+
+            // numero di ricoveri nei 12 mesi precedenti la data DATA
+            'NUM_RIC' {
+                type = "smallint"
+            }
+
+            // Numeratore di fundus oculi per diabete
+            // RANGE: 0 o 1 o missing
+            'NUM_FUNDOC_DIAB' {
+                type = "boolean"
+                label = "fundus oculi in soggetti con diabete"
+            }
+
+            // Denominatore di fundus oculi per diabete
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia diabete si applica agli stadi  diab1b diab2a diab2b. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_FUNDOC_DIAB' {
+                type = "boolean"
+            }
+
+            // Numeratore di creatinina per diabete
+            // RANGE: 0 o 1 o missing
+            'NUM_CREATININ_DIAB' {
+                type = "boolean"
+                label = "creatinina in soggetti con diabete"
+            }
+
+            // Denominatore di creatinina per diabete
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia diabete si applica agli stadi  diab1a diab1b diab2a diab2b. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_CREATININ_DIAB' {
+                type = "boolean"
+            }
+
+            // Numeratore di profilo lipidico per diabete
+            // RANGE: 0 o 1 o missing
+            'NUM_PROFLIP_DIAB' {
+                type = "boolean"
+                label = "profilo lipidico in soggetti con diabete"
+            }
+
+            // Denominatore di profilo lipidico per diabete
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia diabete si applica agli stadi  diab1a diab1b diab2a diab2b. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_PROFLIP_DIAB' {
+                type = "boolean"
+            }
+
+            // Numeratore di microalbuminuria per diabete
+            // RANGE: 0 o 1 o missing
+            'NUM_MICROALB_DIAB' {
+                type = "boolean"
+                label = "microalbuminuria in soggetti con diabete"
+            }
+
+            // Denominatore di microalbuminuria per diabete
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia diabete si applica agli stadi  diab1a diab1b diab2a diab2b. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_MICROALB_DIAB' {
+                type = "boolean"
+            }
+
+            // Numeratore di emoglobina glicata per diabete
+            // RANGE: 0 o 1 o missing
+            'NUM_EMOGLIC_DIAB' {
+                type = "boolean"
+                label = "emoglobina glicata in soggetti con diabete"
+            }
+
+            // Denominatore di emoglobina glicata per diabete
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia diabete si applica agli stadi  diab1a diab1b diab2a diab2b. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_EMOGLIC_DIAB' {
+                type = "boolean"
+            }
+
+            // Numeratore di terapia con statine per diabete
+            // RANGE: 0 o 1 o missing
+            'NUM_STATINE_DIAB' {
+                type = "boolean"
+                label = "terapia con statine in soggetti con diabete"
+            }
+
+            // Denominatore di terapia con statine per diabete
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia diabete si applica agli stadi  diab1a diab1b diab2a diab2b. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_STATINE_DIAB' {
+                type = "boolean"
+            }
+
+            // Numeratore di creatinina per ipertensione
+            // RANGE: 0 o 1 o missing
+            'NUM_CREATININ_HYPERTE' {
+                type = "boolean"
+                label = "creatinina in soggetti con ipertensione"
+            }
+
+            // Denominatore di creatinina per ipertensione
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia ipertensione si applica agli stadi  hyperte1 hyperte2a hyperte2b. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_CREATININ_HYPERTE' {
+                type = "boolean"
+            }
+
+            // Numeratore di profilo lipidico per ipertensione
+            // RANGE: 0 o 1 o missing
+            'NUM_PROFLIP_HYPERTE' {
+                type = "boolean"
+                label = "profilo lipidico in soggetti con ipertensione"
+            }
+
+            // Denominatore di profilo lipidico per ipertensione
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia ipertensione si applica agli stadi  hyperte1 hyperte2a hyperte2b. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_PROFLIP_HYPERTE' {
+                type = "boolean"
+            }
+
+            // Numeratore di microalbuminuria per ipertensione
+            // RANGE: 0 o 1 o missing
+            'NUM_MICROALB_HYPERTE' {
+                type = "boolean"
+                label = "microalbuminuria in soggetti con ipertensione"
+            }
+
+            // Denominatore di microalbuminuria per ipertensione
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia ipertensione si applica agli stadi  hyperte1 hyperte2a hyperte2b. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_MICROALB_HYPERTE' {
+                type = "boolean"
+            }
+
+            // Numeratore di elettrocardiogramma per ipertensione
+            // RANGE: 0 o 1 o missing
+            'NUM_ECG_HYPERTE' {
+                type = "boolean"
+                label = "elettrocardiogramma in soggetti con ipertensione"
+            }
+
+            // Denominatore di elettrocardiogramma per ipertensione
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia ipertensione si applica agli stadi  hyperte2a hyperte2b. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_ECG_HYPERTE' {
+                type = "boolean"
+            }
+
+            // Numeratore di emoglobina glicata o glicemia per ipertensione
+            // RANGE: 0 o 1 o missing
+            'NUM_GLICEM_HYPERTE' {
+                type = "boolean"
+                label = "emoglobina glicata o glicemia in soggetti con ipertensione"
+            }
+
+            // Denominatore di emoglobina glicata o glicemia per ipertensione
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia ipertensione si applica agli stadi  hyperte1 hyperte2a hyperte2b. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_GLICEM_HYPERTE' {
+                type = "boolean"
+            }
+
+            // Numeratore di profilo lipidico per cardiopatia ischemica
+            // RANGE: 0 o 1 o missing
+            'NUM_PROFLIP_IHD' {
+                type = "boolean"
+                label = "profilo lipidico in soggetti con cardiopatia ischemica"
+            }
+
+            // Denominatore di profilo lipidico per cardiopatia ischemica
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia cardiopatia ischemica si applica agli stadi  IHD1a IHD1b IHD2a IHD2b IHD3. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_PROFLIP_IHD' {
+                type = "boolean"
+            }
+
+            // Numeratore di terapia con statine per cardiopatia ischemica
+            // RANGE: 0 o 1 o missing
+            'NUM_STATINE_IHD' {
+                type = "boolean"
+                label = "terapia con statine in soggetti con cardiopatia ischemica"
+            }
+
+            // Denominatore di terapia con statine per cardiopatia ischemica
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia cardiopatia ischemica si applica agli stadi  IHD2a IHD2b IHD3. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_STATINE_IHD' {
+                type = "boolean"
+            }
+
+            // Numeratore di elettrocardiogramma per cardiopatia ischemica
+            // RANGE: 0 o 1 o missing
+            'NUM_ECG_IHD' {
+                type = "boolean"
+                label = "elettrocardiogramma in soggetti con cardiopatia ischemica"
+            }
+
+            // Denominatore di elettrocardiogramma per cardiopatia ischemica
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia cardiopatia ischemica si applica agli stadi  IHD1a IHD1b IHD2a IHD2b IHD3. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_ECG_IHD' {
+                type = "boolean"
+            }
+
+            // Numeratore di test ergometrico per cardiopatia ischemica
+            // RANGE: 0 o 1 o missing
+            'NUM_ERGOMETR_IHD' {
+                type = "boolean"
+                label = "test ergometrico in soggetti con cardiopatia ischemica"
+            }
+
+            // Denominatore di test ergometrico per cardiopatia ischemica
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia cardiopatia ischemica si applica agli stadi  IHD1a IHD1b IHD2a IHD2b. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_ERGOMETR_IHD' {
+                type = "boolean"
+            }
+
+            // Numeratore di emoglobina glicata o glicemia per cardiopatia ischemica
+            // RANGE: 0 o 1 o missing
+            'NUM_GLICEM_IHD' {
+                type = "boolean"
+                label = "emoglobina glicata o glicemia in soggetti con cardiopatia ischemica"
+            }
+
+            // Denominatore di emoglobina glicata o glicemia per cardiopatia ischemica
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia cardiopatia ischemica si applica agli stadi  IHD1a IHD1b IHD2a IHD2b IHD3. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_GLICEM_IHD' {
+                type = "boolean"
+            }
+
+            // Numeratore di terapia con antiaggreganti per cardiopatia ischemica
+            // RANGE: 0 o 1 o missing
+            'NUM_ANTIAGGREG_IHD' {
+                type = "boolean"
+                label = "terapia con antiaggreganti in soggetti con cardiopatia ischemica"
+            }
+
+            // Denominatore di terapia con antiaggreganti per cardiopatia ischemica
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia cardiopatia ischemica si applica agli stadi  IHD1a IHD1b IHD2a IHD2b IHD3. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_ANTIAGGREG_IHD' {
+                type = "boolean"
+            }
+
+            // Numeratore di terapia con betabloccanti per cardiopatia ischemica
+            // RANGE: 0 o 1 o missing
+            'NUM_BETABLOC_IHD' {
+                type = "boolean"
+                label = "terapia con betabloccanti in soggetti con cardiopatia ischemica"
+            }
+
+            // Denominatore di terapia con betabloccanti per cardiopatia ischemica
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia cardiopatia ischemica si applica agli stadi  IHD2a IHD2b IHD3. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_BETABLOC_IHD' {
+                type = "boolean"
+            }
+
+            // Numeratore di terapia con ACE inibitori per cardiopatia ischemica
+            // RANGE: 0 o 1 o missing
+            'NUM_ACEINIB_IHD' {
+                type = "boolean"
+                label = "terapia con ACE inibitori in soggetti con cardiopatia ischemica"
+            }
+
+            // Denominatore di terapia con ACE inibitori per cardiopatia ischemica
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia cardiopatia ischemica si applica agli stadi  IHD2a IHD2b IHD3. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_ACEINIB_IHD' {
+                type = "boolean"
+            }
+
+            // Numeratore di elettrocardiogramma per scompenso cardiaco
+            // RANGE: 0 o 1 o missing
+            'NUM_ECG_HF' {
+                type = "boolean"
+                label = "elettrocardiogramma in soggetti con scompenso cardiaco"
+            }
+
+            // Denominatore di elettrocardiogramma per scompenso cardiaco
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia scompenso cardiaco si applica agli stadi  HF. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_ECG_HF' {
+                type = "boolean"
+            }
+
+            // Numeratore di terapia con betabloccanti per scompenso cardiaco
+            // RANGE: 0 o 1 o missing
+            'NUM_BETABLOC_HF' {
+                type = "boolean"
+                label = "terapia con betabloccanti in soggetti con scompenso cardiaco"
+            }
+
+            // Denominatore di terapia con betabloccanti per scompenso cardiaco
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia scompenso cardiaco si applica agli stadi  HF. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_BETABLOC_HF' {
+                type = "boolean"
+            }
+
+            // Numeratore di terapia con ACE inibitori per scompenso cardiaco
+            // RANGE: 0 o 1 o missing
+            'NUM_ACEINIB_HF' {
+                type = "boolean"
+                label = "terapia con ACE inibitori in soggetti con scompenso cardiaco"
+            }
+
+            // Denominatore di terapia con ACE inibitori per scompenso cardiaco
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia scompenso cardiaco si applica agli stadi  HF. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_ACEINIB_HF' {
+                type = "boolean"
+            }
+
+            // Numeratore di esami creatinina sodio e potassio per scompenso cardiaco
+            // RANGE: 0 o 1 o missing
+            'NUM_CREATNAK_HF' {
+                type = "boolean"
+                label = "esami creatinina sodio e potassio in soggetti con scompenso cardiaco"
+            }
+
+            // Denominatore di esami creatinina sodio e potassio per scompenso cardiaco
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia scompenso cardiaco si applica agli stadi  HF. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_CREATNAK_HF' {
+                type = "boolean"
+            }
+
+            // Numeratore di esami sodio e potassio in trattati con diuretici per scompenso cardiaco
+            // RANGE: 0 o 1 o missing
+            'NUM_NAKDIUR_HF' {
+                type = "boolean"
+                label = "esami sodio e potassio in trattati con diuretici in soggetti con scompenso cardiaco"
+            }
+
+            // Denominatore di esami sodio e potassio in trattati con diuretici per scompenso cardiaco
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia scompenso cardiaco si applica agli stadi  HF. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_NAKDIUR_HF' {
+                type = "boolean"
+            }
+
+            // Numeratore di walking test per scompenso cardiaco
+            // RANGE: 0 o 1 o missing
+            'NUM_WALKTEST_HF' {
+                type = "boolean"
+                label = "walking test in soggetti con scompenso cardiaco"
+            }
+
+            // Denominatore di walking test per scompenso cardiaco
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia scompenso cardiaco si applica agli stadi  HF. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_WALKTEST_HF' {
+                type = "boolean"
+            }
+
+            // Numeratore di valutazione peptide natriuredico per scompenso cardiaco
+            // RANGE: 0 o 1 o missing
+            'NUM_BNP_HF' {
+                type = "boolean"
+                label = "valutazione peptide natriuredico in soggetti con scompenso cardiaco"
+            }
+
+            // Denominatore di valutazione peptide natriuredico per scompenso cardiaco
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia scompenso cardiaco si applica agli stadi  HF. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_BNP_HF' {
+                type = "boolean"
+            }
+
+            // Numeratore di elettrocardiogramma per demenza
+            // RANGE: 0 o 1 o missing
+            'NUM_ECG_DEMEN' {
+                type = "boolean"
+                label = "elettrocardiogramma in soggetti con demenza"
+            }
+
+            // Denominatore di elettrocardiogramma per demenza
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia demenza si applica agli stadi  demen. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_ECG_DEMEN' {
+                type = "boolean"
+            }
+
+            // Numeratore di visita neorologica o geriatrica per demenza
+            // RANGE: 0 o 1 o missing
+            'NUM_VISNEURO_DEMEN' {
+                type = "boolean"
+                label = "visita neorologica o geriatrica in soggetti con demenza"
+            }
+
+            // Denominatore di visita neorologica o geriatrica per demenza
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia demenza si applica agli stadi  demen. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_VISNEURO_DEMEN' {
+                type = "boolean"
+            }
+
+            // Numeratore di test della memoria per demenza
+            // RANGE: 0 o 1 o missing
+            'NUM_TESTMEM_DEMEN' {
+                type = "boolean"
+                label = "test della memoria in soggetti con demenza"
+            }
+
+            // Denominatore di test della memoria per demenza
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia demenza si applica agli stadi  demen. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_TESTMEM_DEMEN' {
+                type = "boolean"
+            }
+
+            // Numeratore di esami ematochimici per demenza
+            // RANGE: 0 o 1 o missing
+            'NUM_EMATOCHIM_DEMEN' {
+                type = "boolean"
+                label = "esami ematochimici in soggetti con demenza"
+            }
+
+            // Denominatore di esami ematochimici per demenza
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia demenza si applica agli stadi  demen. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_EMATOCHIM_DEMEN' {
+                type = "boolean"
+            }
+
+            // Numeratore di terapia con neurolettici atipici per demenza
+            // RANGE: 0 o 1 o missing
+            'NUM_NEUROLATIP_DEMEN' {
+                type = "boolean"
+                label = "terapia con neurolettici atipici in soggetti con demenza"
+            }
+
+            // Denominatore di terapia con neurolettici atipici per demenza
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia demenza si applica agli stadi  demen. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_NEUROLATIP_DEMEN' {
+                type = "boolean"
+            }
+
+            // Numeratore di terapia con neurolettici tipici per demenza
+            // RANGE: 0 o 1 o missing
+            'NUM_NEUROLTIP_DEMEN' {
+                type = "boolean"
+                label = "terapia con neurolettici tipici in soggetti con demenza"
+            }
+
+            // Denominatore di terapia con neurolettici tipici per demenza
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia demenza si applica agli stadi  demen. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_NEUROLTIP_DEMEN' {
+                type = "boolean"
+            }
+
+            // Numeratore di assistenza domiciliare per demenza
+            // RANGE: 0 o 1 o missing
+            'NUM_ASSDOM_DEMEN' {
+                type = "boolean"
+                label = "assistenza domiciliare in soggetti con demenza"
+            }
+
+            // Denominatore di assistenza domiciliare per demenza
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia demenza si applica agli stadi  demen. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_ASSDOM_DEMEN' {
+                type = "boolean"
+            }
+
+            // Numeratore di assistenza residenziale per demenza
+            // RANGE: 0 o 1 o missing
+            'NUM_ASSRES_DEMEN' {
+                type = "boolean"
+                label = "assistenza residenziale in soggetti con demenza"
+            }
+
+            // Denominatore di assistenza residenziale per demenza
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia demenza si applica agli stadi  demen. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_ASSRES_DEMEN' {
+                type = "boolean"
+            }
+
+            // Numeratore di assistenza residenziale per demenza per demenza
+            // RANGE: 0 o 1 o missing
+            'NUM_ASSREDEM_DEMEN' {
+                type = "boolean"
+                label = "assistenza residenziale per demenza in soggetti con demenza"
+            }
+
+            // Denominatore di assistenza residenziale per demenza per demenza
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia demenza si applica agli stadi  demen. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_ASSREDEM_DEMEN' {
+                type = "boolean"
+            }
+
+            // Numeratore di assistenza residenziale per demenza
+            // RANGE: 0 o 1 o missing
+            'NUM_ASSSEMIRES_DEMEN' {
+                type = "boolean"
+                label = "assistenza residenziale in soggetti con demenza"
+            }
+
+            // Denominatore di assistenza residenziale per demenza
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia demenza si applica agli stadi  demen. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_ASSSEMIRES_DEMEN' {
+                type = "boolean"
+            }
+
+            // Numeratore di assistenza semiresidenziale per demenza per demenza
+            // RANGE: 0 o 1 o missing
+            'NUM_ASSSEMIREDEM_DEMEN' {
+                type = "boolean"
+                label = "assistenza semiresidenziale per demenza in soggetti con demenza"
+            }
+
+            // Denominatore di assistenza semiresidenziale per demenza per demenza
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia demenza si applica agli stadi  demen. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_ASSSEMIREDEM_DEMEN' {
+                type = "boolean"
+            }
+
+            // Numeratore di trattati con neurolettici atipici su totale trattati con neurolettici per demenza
+            // RANGE: 0 o 1 o missing
+            'NUM_NEUROLATIVSTI_DEMEN' {
+                type = "boolean"
+                label = "trattati con neurolettici atipici su totale trattati con neurolettici in soggetti con demenza"
+            }
+
+            // Denominatore di trattati con neurolettici atipici su totale trattati con neurolettici per demenza
+            // RANGE: 0 o 1 (o missing)
+            // NOTE: Questo indicatore nel caso della patologia demenza si applica agli stadi demen. Quindi il valore di questa variabile vale 1 nei pazienti che erano in questi stadi alla data DATA-12M, mentre per tutto il resto della popolazione essa assume valore missing
+            'DEN_NEUROLATIVSTI_DEMEN' {
+                type = "boolean"
+            }
+        }
+
+        /**
+         * Calculated fields
+         *
+         * Alla closure "value" vengono passati due oggetti:
+         * - record = Map contenente tutti campi del record (compresi quelli già calcolati)
+         * - context = Map contenente eventuali variabili necessarie ai calcoli (es: anno corrente)
+         */
+        calculatedFields {
+            'RECORD_DATE' {
+                persist = false // Usato solo per i calcoli interni. Non crea la colonna
+                type = "date"
+                value = { record, context ->
+                    try {
+                        Date.parse("yyyy-MM-dd", record['DATA'])
+                    }
+                    catch(Exception) {
+                        null
+                    }
+                }
+            }
+
+            'BIRTH_DATE' {
+                persist = false // Usato solo per i calcoli interni. Non crea la colonna
+                type = "date"
+                value = { record, context ->
+                    try {
+                        Date.parse("yyyy-MM-dd", record['DATA_NASCITA'])
+                    }
+                    catch(Exception) {
+                        null
+                    }
+                }
+            }
+
+            'AGE' {
+                type = "int"
+                value = { record, context ->
+                    start = record["BIRTH_DATE"]
+                    recordDate = record["RECORD_DATE"]
+                    yearsBetween = recordDate[Calendar.YEAR] - start[Calendar.YEAR]
+                }
+            }
+
+            'AGE_RANGE' {
+                type = "varchar"
+                size = 10
+                value = { record, context ->
+                    switch (record['AGE']) {
+                        case { it < 15 }:
+                            "1"
+                            break
+                        case { it >= 15 && it < 45 }:
+                            "2"
+                            break
+                        case { it >= 45 && it < 55 }:
+                            "3"
+                            break
+                        case { it >= 55 && it < 65 }:
+                            "4"
+                            break
+                        case { it >= 65 && it < 75 }:
+                            "5"
+                            break
+                        case { it >= 75 }:
+                            "6"
+                            break
+                        default:
+                            ""
+                    }
+                }
+            }
+
+            'HYPERTE' {
+                type = "varchar"
+                size = 1
+                value = { record, context ->
+                    def v = record['STADIO_HYPERTE_12M']?.trim()
+                    if (v != '' && v != '0') {
+                        "1"
+                    }
+                    else {
+                        "0"
+                    }
+                }
+            }
+
+            'DIAB' {
+                type = "varchar"
+                size = 1
+                value = { record, context ->
+                    def v = record['STADIO_DIAB_12M']?.trim()
+                    if (v != '' && v != '0') {
+                        "1"
+                    }
+                    else {
+                        "0"
+                    }
+                }
+            }
+
+            'IHD' {
+                type = "varchar"
+                size = 1
+                value = { record, context ->
+                    def v = record['STADIO_IHD_12M']?.trim()
+                    if (v != '' && v != '0') {
+                        "1"
+                    }
+                    else {
+                        "0"
+                    }
+                }
+            }
+
+            'HF' {
+                type = "varchar"
+                size = 1
+                value = { record, context ->
+                    def v = record['STADIO_HF_12M']?.trim()
+                    if (v != '' && v != '0') {
+                        "1"
+                    }
+                    else {
+                        "0"
+                    }
+                }
+            }
+
+            'DEMEN' {
+                type = "varchar"
+                size = 1
+                value = { record, context ->
+                    def v = record['ANTICOLIN_12M']?.trim()
+                    if (v != '' && v != '0') {
+                        "1"
+                    }
+                    else {
+                        "0"
+                    }
+                }
+            }
+
+            'DIST_MMG' {
+                type = "varchar"
+                size = 100
+                value = { record, context ->
+                    def mmg = record['MMG']?.trim()
+                    if (mmg) {
+                        def data = record["RECORD_DATE"]
+                        def rows = mmg.lookup("DISTRETTI", "MMG", ["DISTRETTO", "DATE_START", "DATE_END"])
+                        if (rows) {
+                            def result = null
+                            rows.any { d ->
+                                def d1 = d.DATE_START ?: Date.parse("yyyy-MM-dd", "1900-01-01")
+                                def d2 = d.DATE_END
+                                if (d2 == null && data >= d1) {
+                                    result = d.DISTRETTO
+                                }
+                                else if (data >= d1 && data <= d2) {
+                                    result = d.DISTRETTO
+                                }
+                            }
+                            result
+                        }
+                        else {
+                            null
+                        }
+                    }
+                    else {
+                        null
+                    }
+                }
+            }
+        }
+    }
+}
+
+lookups {
+    // Tabella di mapping distretti
+    'DISTRETTI' {
+        label = "File distretti"
+        mandatory = true
+        skipAutoId = true
+        fields {
+            'ASL' {
+                type = "varchar"
+                size = 10
+            }
+
+            'MMG' {
+                type = "varchar"
+                size = 20
+            }
+
+            'DATA_INIZIO' {
+                type = "varchar"
+                size = 10
+            }
+
+            'DATA_FINE' {
+                type = "varchar"
+                size = 10
+            }
+
+            'MOT_FINE' {
+                type = "varchar"
+                size = 255
+            }
+
+            'GRUPPO_A' {
+                type = "varchar"
+                size = 5
+            }
+
+            'GRUPPO_B' {
+                type = "varchar"
+                size = 5
+            }
+
+            'GRUPPO_C' {
+                type = "varchar"
+                size = 5
+            }
+
+            'GRUPPO_D' {
+                type = "varchar"
+                size = 5
+            }
+
+            'DISTRETTO' {
+                type = "varchar"
+                size = 10
+            }
+        }
+
+        calculatedFields {
+            'DATE_START' {
+                persist = true
+                type = "date"
+                value = { record, context ->
+                    try {
+                        Date.parse("yyyy-MM-dd", record['DATA_INIZIO'])
+                    }
+                    catch(Exception) {
+                        null
+                    }
+                }
+            }
+            'DATE_END' {
+                persist = true
+                type = "date"
+                value = { record, context ->
+                    try {
+                        Date.parse("yyyy-MM-dd", record['DATA_FINE'])
+                    }
+                    catch(Exception) {
+                        null
+                    }
+                }
+            }
+        }
+
+        indexes {
+            'mmgidx' {
+                // primary = true
+                // unique = true
+                fields = ['MMG']
+            }
+        }
+    }
+}

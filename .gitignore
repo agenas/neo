@@ -4,3 +4,11 @@ build
 .DS_Store
 *~
 .~*
+
+*.ipr
+*.iws
+*.iml
+*.ids
+
+github.properties
+

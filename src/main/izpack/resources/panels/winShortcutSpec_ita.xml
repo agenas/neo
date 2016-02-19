@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+<shortcuts>
+  <skipIfNotSupported/>
+
+  <programGroup defaultName="$appGroup"
+                location="applications"/>
+
+  <shortcut
+    name="NeoBox"
+    target="$INSTALL_PATH\neobox.exe"
+    commandLine="it"
+    workingDirectory="$INSTALL_PATH"
+    description="NeoBox"
+    initialState="normal"
+    programGroup="yes"
+    desktop="yes"
+    applications="no"
+    startMenu="no"
+    startup="no">
+  </shortcut>
+
+  <shortcut
+    name="NeoBox guida rapida"
+    target="$INSTALL_PATH\docs\pdf\quickstart.pdf"
+    commandLine=""
+    workingDirectory="$INSTALL_PATH"
+    description="NeoBox guida rapida"
+    initialState="normal"
+    programGroup="yes"
+    desktop="no"
+    applications="no"
+    startMenu="no"
+    startup="no">
+    <createForPack name="Documentation" />
+  </shortcut>
+
+  <shortcut
+    name="Disinstalla NeoBox"
+    target="$INSTALL_PATH\Uninstaller\uninstaller.jar"
+    commandLine=""
+    workingDirectory="$INSTALL_PATH"
+    description="Disinstalla NeoBox"
+    initialState="normal"
+    programGroup="yes"
+    desktop="no"
+    applications="no"
+    startMenu="no"
+    startup="no">
+  </shortcut>
+
+</shortcuts>

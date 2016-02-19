@@ -1,0 +1,42 @@
+= NeoBox {neoboxversion}: Guida programmatore
+Stefano Gualdi <stefano.gualdi@gmail.com>
+2015-11-25
+:revnumber: 1.0.0
+:toc:
+:toclevels: 3
+:toc-title: Indice dei contenuti
+:sectnums:
+ifndef::imagesdir[:imagesdir: programmers]
+
+// Document is in draft mode
+:draft-mode:
+
+ifdef::draft-mode[]
+
+== Introduzione
+
+Scopo della guida
+
+== Specifiche di import
+
+TBW
+
+== Pacchetti statistici
+
+TBW
+
+=== Descrittore indicatore
+
+TBW
+
+=== Codice statistico (linguaggio R)
+
+TBW
+
+=== Report
+
+TBW
+
+== FAQ
+
+TBW

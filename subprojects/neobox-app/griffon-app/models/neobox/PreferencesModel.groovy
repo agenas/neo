@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Stefano Gualdi, AGENAS.
+ * Copyright 2014-2016 Stefano Gualdi, AGENAS.
  *
  * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package neobox
+
+import griffon.core.artifact.GriffonModel
+import griffon.metadata.ArtifactProviderFor
 
 /**
  * @author Stefano Gualdi <stefano.gualdi@gmail.com>
  */
+@ArtifactProviderFor(GriffonModel)
 class PreferencesModel extends AbstractDialogModel {
-    protected String getDialogKey() { 'preferences' }
+  protected String getDialogKey() { 'preferences' }
 
-    protected String getDialogTitle() { 'Preferences' }
+  protected String getDialogTitle() { 'Preferences' }
 
-    void mvcGroupInit(Map<String, Object> args) {
-        super.mvcGroupInit(args)
-        resizable = false
-    }
+  void mvcGroupInit(Map<String, Object> args) {
+    super.mvcGroupInit(args)
+    resizable = false
+  }
 }

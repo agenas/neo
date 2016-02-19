@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Stefano Gualdi, AGENAS.
+ * Copyright 2014-2016 Stefano Gualdi, AGENAS.
  *
  * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,75 +14,215 @@
  * limitations under the License.
  */
 
- /**
+/**
  * @author Stefano Gualdi <stefano.gualdi@gmail.com>
  */
+import org.apache.tools.ant.filters.ReplaceTokens
+
+buildscript {
+  repositories {
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'org.gradle.api.plugins:gradle-izpack-plugin:0.2.3'
+    classpath 'co.riiid:gradle-github-plugin:0.4.2'
+  }
+}
 
 apply plugin: 'groovy'
+apply plugin: 'izpack'
 apply plugin: 'idea'
+
+apply from: 'gradle/githubPublish.gradle'
+
+repositories {
+  jcenter()
+}
+
+dependencies {
+  izpack 'org.codehaus.izpack:izpack-standalone-compiler:4.3.5'
+}
 
 // Fail the build if we don't have the expected Java version
 def javaVersion = System.getProperty("java.version")
 if (!javaVersion.startsWith("1.7")) {
-    throw new IllegalStateException("Please update JAVA_HOME to use a 1.7 JDK (it is: $javaVersion)")
-}
-
-allprojects {
-    ext.neoboxVersion = "1.0.3"
-    ext.matriceVersion = "1.0.5"
+  throw new IllegalStateException("Please update JAVA_HOME to use a 1.7 JDK (it is: $javaVersion)")
 }
 
 subprojects { subproj ->
-    apply plugin: 'groovy'
+  apply plugin: 'groovy'
 
-    if(plugins.hasPlugin('java')){
-        sourceCompatibility = 1.7
-        targetCompatibility = 1.7
-    }
+  ext {
+    neoboxVersion = project(':neobox-app').version
+    neoboxMatriceVersion = project(':neobox-matrice').version
+  }
+
+  if (plugins.hasPlugin('java')) {
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+  }
 }
 
-task distBinaries(type: Copy, dependsOn: [':neobox-app:assemble']) {
-  description = "Creates the neobox binaries distribution."
+subprojects.each { subproject -> evaluationDependsOn(subproject.path) }
 
-  // OSX version
-  from(project(':neobox-app').file('dist/mac')) {
-      include '*.dmg'
+task dist(type: Copy) {
+  description 'Create single distributions'
+
+  dependsOn ':neobox-app:distZip', ':neobox-manual:distZip', ':neobox-matrice:distZip', ':neobox-luna:distZip'
+
+  // NeoBox app
+  from(project(':neobox-app').file('build/distributions')) {
+    include '*.zip'
+    include '*.dmg'
   }
 
-  // Windows version
-  from(project(':neobox-app').file('dist/jsmooth')) {
-      include '*.zip'
+  // NeoBox documentation
+  from(project(':neobox-manual').file('build/distributions')) {
+    include '**/*.zip'
   }
 
-  // Multiplatforn installer
-  from(project(':neobox-app').file('dist/izpack')) {
-      include '*.jar'
-  }
-
-  into "${buildDir}/dist"
-}
-
-task distMatrice(type: Copy, dependsOn: [':neobox-matrice:distZip']) {
-  description = "Creates the matrice data/stats bundle distribution."
-
+  // MATRICE statistical package
   from(project(':neobox-matrice').file('build/distributions')) {
     include '**/*.zip'
   }
-  into "${buildDir}/dist"
-}
 
-task distMatriceSampleData(type: Copy, dependsOn: [':neobox-matrice-sample-data:distZip']) {
-  description = "Creates the matrice sample data bundle distribution."
-
-  from(project(':neobox-matrice-sample-data').file('build/distributions')) {
+  // LUNA statistical package
+  from(project(':neobox-luna').file('build/distributions')) {
     include '**/*.zip'
   }
-  into "${buildDir}/dist"
+
+  // MATRICE sample data
+  from("src/packs/sample-data") {
+    include '*.zip'
+  }
+
+  into "${buildDir}/distributions"
 }
 
-task dist(type: Copy, dependsOn: [distBinaries, distMatrice, distMatriceSampleData]) {
+task prepareIzpack(type: Copy) {
+  dependsOn ':neobox-app:distZip', ':neobox-manual:distZip', ':neobox-matrice:distZip', ':neobox-luna:distZip'
+
+  destinationDir = file("$buildDir/install/izpack")
+
+  def resourcesDir = "src/main/izpack/resources"
+
+  ['html', 'panels'].each {
+    from("${resourcesDir}/${it}") {
+      into 'resources'
+      filter(ReplaceTokens, tokens: ['app.version': version])
+      exclude '**/*.png'
+      exclude '**/*.jpg'
+    }
+  }
+
+  from("${resourcesDir}/images") {
+    into 'resources'
+    include '**/*.png'
+    include '**/*.jpg'
+  }
+
+  // Prepare NeoBox
+  from zipTree(file("${project(':neobox-app').buildDir}/distributions/${project(':neobox-app').distZip.archiveName}"))
+
+  // Prepare NeoBox documentation
+  from zipTree(file("${project(':neobox-manual').buildDir}/distributions/${project(':neobox-manual').distZip.archiveName}"))
+
+  // Prepare MATRICE statistical package
+  into('matrice-package') {
+    def project = project(':neobox-matrice')
+    def version = project.version
+    def base = project.buildDir
+    from file("${base}/distributions")
+    rename { String fileName ->
+      fileName.replace("-${version}", '')
+    }
+  }
+
+  // Prepare LUNA statistical package
+  into('luna-package') {
+    def project = project(':neobox-luna')
+    def version = project.version
+    def base = project.buildDir
+    from file("${base}/distributions")
+    rename { String fileName ->
+      fileName.replace("-${version}", '')
+    }
+  }
+
+  // Prepare MATRICE sample data
+  into('matrice-sample-data') {
+    from zipTree("src/packs/sample-data/matrice-sample-data.zip")
+  }
+}
+
+prepareIzpack.doLast {
+  def path = "${buildDir}/install/izpack"
+  [
+    'neobox-app',
+    'neobox-manual'
+  ].each { name ->
+    def project = project(":${name}")
+    def version = "${project.version}"
+    def curName = "${project.distZip.archiveName}" - '.zip'
+    def newName = curName - ('-' + version)
+    def newFile = file("${path}/${newName}")
+    if (newFile.exists()) {
+      newFile.deleteDir()
+    }
+    file("${path}/${curName}").renameTo(newFile)
+  }
+}
+
+izPackCreateInstaller.dependsOn prepareIzpack
+izPackCreateInstaller.doFirst {
+  ant.chmod(dir: "$buildDir/install/izpack/neobox/bin", excludes: '*.bat', perm: 'ugo+x')
+}
+build.dependsOn izPackCreateInstaller
+
+izpack {
+  baseDir = file("$buildDir/install/izpack")
+
+  def projectName = "NeoBox"
+  def projectVersion = project(':neobox-app').version
+
+  installFile = file('src/main/izpack/install.xml')
+  outputFile = file("$buildDir/distributions/${project.name}-installer-${projectVersion}.jar")
+
+  installerType = 'standard'
+
+  compression = 'deflate'
+  compressionLevel = 9
+
+  appProperties = [
+    'app.group'       : 'NeoBox',
+    'app.name'        : projectName,
+    'app.title'       : projectName,
+    'app.version'     : projectVersion,
+    'app.subpath'     : "${projectName}-${projectVersion}",
+    'app.binary'      : projectName,
+    'app.java.version': targetCompatibility
+  ]
+}
+
+task installer() {
+  description 'Create the installer'
+  dependsOn 'izPackCreateInstaller'
+}
+
+task publish() {
+  description 'Publish release on GitHub'
+  dependsOn 'installer', 'githubRelease'
+}
+
+idea {
+  project {
+    jdkName = '1.7'
+    languageLevel = '1.7'
+    vcs = 'Git'
+  }
 }
 
 wrapper {
-    gradleVersion = '1.12'
+  gradleVersion = '2.10'
 }

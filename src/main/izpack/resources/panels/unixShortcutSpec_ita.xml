@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<shortcuts>
+  <programGroup defaultName="TheMatrix-@app.version@" location="applications"/>
+
+  <shortcut
+    name="NeoBox"
+    programGroup="yes"
+    desktop="yes"
+    applications="no"
+    startMenu="no"
+    startup="no"
+    target="$INSTALL_PATH/bin/neobox"
+    commandLine="it"
+    initialState="normal"
+    iconFile="$INSTALL_PATH/resources/neobox.png"
+    iconIndex="0"
+    workingDirectory="$INSTALL_PATH"
+    type="Application"
+    encoding="UTF-8"
+    KdeSubstUID="true"
+    KdeUsername="root"
+    createForAll="false"
+    Categories="Application;Development;"
+    description="">
+  </shortcut>
+
+  <shortcut
+    name="Disinstalla NeoBox"
+    programGroup="yes"
+    desktop="no"
+    applications="no"
+    startMenu="no"
+    startup="no"
+    target="/usr/bin/java"
+    commandLine="-jar &quot;$INSTALL_PATH/Uninstaller/uninstaller.jar&quot;"
+    initialState="noShow"
+    iconFile="trashcan_full"
+    iconIndex="0"
+    workingDirectory=""
+    type="Application"
+    encoding="UTF-8"
+    KdeSubstUID="true"
+    KdeUsername="root"
+    createForAll="false"
+    Categories="Application;Development;"
+    description="Disinstalla NeoBox @app.version@">
+  </shortcut>
+</shortcuts>

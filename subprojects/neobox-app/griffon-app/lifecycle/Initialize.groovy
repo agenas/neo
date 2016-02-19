@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Stefano Gualdi, AGENAS.
+ * Copyright 2014-2016 Stefano Gualdi, AGENAS.
  *
  * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,28 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import griffon.core.GriffonApplication
+import org.codehaus.griffon.runtime.core.AbstractLifecycleHandler
 
-/*
- * This script is executed inside the UI thread, so be sure to  call
- * long running code in another thread.
- *
- * You have the following options
- * - execOutsideUI { // your code }
- * - execFuture { // your code }
- * - Thread.start { // your code }
- *
- * You have the following options to run code again inside the UI thread
- * - execInsideUIAsync { // your code }
- * - execInsideUISync { // your code }
- */
+import javax.annotation.Nonnull
+import javax.inject.Inject
 
-import groovy.swing.SwingBuilder
 import static griffon.util.GriffonApplicationUtils.isMacOSX
-import neobox.utils.NeoboxUtils
+import static groovy.swing.SwingBuilder.lookAndFeel
 
-SwingBuilder.lookAndFeel((isMacOSX ? 'system' : 'nimbus'), 'gtk', ['metal', [boldFonts: false]])
+class Initialize extends AbstractLifecycleHandler {
+  @Inject
+  Initialize(@Nonnull GriffonApplication application) {
+    super(application)
+  }
 
-app.localeAsString = NeoboxUtils.PREFERENCES.get("mainLanguage", "it")
-
-SplashGriffonAddon.display(app)
-griffon.plugins.splash.SplashScreen.instance.showStatus(app.getMessage("application.splash.loading"))
+  @Override
+  void execute() {
+    lookAndFeel((isMacOSX ? 'system' : 'nimbus'), 'gtk', ['metal', [boldFonts: false]])
+  }
+}

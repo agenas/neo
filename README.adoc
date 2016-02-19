@@ -1,0 +1,24 @@
+= Neo
+
+== Prerequisites
+
+* Oracle JDK 1.7
+* R version 3.0.1
+
+== Available tasks
+
+=== Create single files distribution
+
+  `./gradlew dist`
+
+=== Create the installer
+
+  `./gradlew installer`
+
+=== Execute Neo in dev mode
+
+  `./gradlew neobox-app:run`
+
+=== Create IntelliJ IDEA project
+
+  `./gradlew idea`

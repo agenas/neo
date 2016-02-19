@@ -1,0 +1,78 @@
+/*
+ * Copyright 2014-2016 Stefano Gualdi, AGENAS.
+ *
+ * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * @author Stefano Gualdi <stefano.gualdi@gmail.com>
+ */
+
+buildscript {
+  repositories {
+    mavenLocal()
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
+    classpath 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.10.1'
+  }
+}
+
+version = neoboxVersion
+
+apply plugin: 'distribution'
+apply plugin: 'org.asciidoctor.convert'
+
+asciidoctor {
+  baseDir = new File("$projectDir/src/asciidoc")
+  sourceDir = new File("$projectDir/src/asciidoc")
+  outputDir = new File("$buildDir/docs")
+
+  logDocuments = true
+
+  backends = ['html5', 'pdf']
+
+  attributes 'neoboxversion': neoboxVersion,
+      'neoboxmatriceversion': neoboxMatriceVersion,
+      'icons': 'font',
+      'toc': 'right',
+      'toc-title': 'Indice dei contenuti',
+      'source-highlighter': 'coderay',
+      'idprefix': '',
+      'idseparator': '-',
+      'copycss': true,
+      'setanchors': 'true',
+      'docinfo1': 'true'
+}
+
+distributions {
+  main {
+    contents {
+      from(file("$buildDir/docs/pdf/users")) {
+        include 'quickstart.pdf'
+        into "pdf"
+      }
+      from(file("$buildDir/docs/html5")) {
+        include 'images/**'
+        into "html"
+      }
+      from(file("$buildDir/docs/html5/users")) {
+        include 'quickstart.html'
+        into "html"
+      }
+    }
+  }
+}
+distZip.dependsOn asciidoctor

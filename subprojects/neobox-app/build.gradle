@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Stefano Gualdi, AGENAS.
+ * Copyright 2014-2016 Stefano Gualdi, AGENAS.
  *
  * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,43 +14,187 @@
  * limitations under the License.
  */
 
-/**
-* @author Stefano Gualdi <stefano.gualdi@gmail.com>
-*/
-
 buildscript {
-    repositories {
-        maven { url 'http://repository.codehaus.org' }
-        maven { url 'http://repository.springsource.com/maven/bundles/release' }
-        maven { url 'http://repository.sonatype.org/content/groups/public' }
-        maven { url 'http://repo.grails.org/grails/core/' }
-        maven { url 'http://download.java.net/maven/2/' }
-        maven { url 'http://dl.bintray.com/aalmiray/maven' }
+  repositories {
+    jcenter()
+    mavenLocal()
+    maven { url 'https://plugins.gradle.org/m2/' }
+  }
 
-        mavenLocal()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath('org.codehaus.griffon:gradle-griffon-plugin:1.1.0')
-        classpath('org.codehaus.griffon:griffon-scripts:1.4.0')
-    }
+  dependencies {
+    classpath 'org.codehaus.griffon:gradle-griffon-plugin:2.5.0'
+    classpath 'net.saliman:gradle-cobertura-plugin:2.2.8'
+    classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.4.0'
+    classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0'
+    classpath 'org.gradle.api.plugins:gradle-izpack-plugin:0.2.3'
+    classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.2'
+    classpath 'com.github.cr0:gradle-macappbundle-plugin:3.1.0'
+    classpath 'org.kordamp.gradle:stats-gradle-plugin:0.1.5'
+    classpath 'com.github.ben-manes:gradle-versions-plugin:0.11.3'
+    classpath 'de.gliderpilot.gradle.jnlp:gradle-jnlp-plugin:0.2.1'
+    classpath 'gradle.plugin.edu.sc.seis.gradle:launch4j:1.6.1'
+  }
 }
 
-version = ext.neoboxVersion
+apply plugin: 'groovy'
+apply plugin: 'org.codehaus.griffon.griffon'
 
-ext.griffonVersion = '1.4.0'
+griffon {
+  disableDependencyResolution = false
+  includeGroovyDependencies = true
+  version = '2.5.0'
+  toolkit = 'swing'
+}
 
-apply plugin: 'project-report'
-apply plugin: 'griffon'
+ext {
+  macosx = System.getProperty('os.name').contains('Mac OS')
+}
+
+mainClassName = 'neobox.Launcher'
+
+apply from: 'gradle/publishing.gradle'
+apply from: 'gradle/code-coverage.gradle'
+apply from: 'gradle/code-quality.gradle'
+apply from: 'gradle/integration-test.gradle'
+// apply from: 'gradle/package.gradle'
+apply from: 'gradle/docs.gradle'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'org.kordamp.gradle.stats'
+apply plugin: 'com.github.ben-manes.versions'
+apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'edu.sc.seis.launch4j'
 
 repositories {
-    mavenLocal()
-    mavenCentral()
-    maven { url 'http://repository.codehaus.org/' }
-    maven { url 'http://dl.bintray.com/aalmiray/maven' }
+  jcenter()
+
+  maven { url "http://docbook4j.googlecode.com/svn/m2-repo/releases/" }
+  maven { url "http://dl.bintray.com/stefanogualdi/griffon-plugins" }
+
+  flatDir {
+    dirs 'lib'
+  }
+
+  mavenLocal()
 }
 
 dependencies {
-    compile "org.codehaus.griffon:griffon-rt:$griffonVersion"
+  compile "org.codehaus.griffon:griffon-guice:${griffon.version}"
+
+  compile 'org.codehaus.griffon.plugins:griffon-miglayout-swing-groovy:1.1.1'
+  compile 'org.codehaus.griffon.plugins:griffon-glazedlists-swing-groovy:1.3.0'
+
+  compile 'org.codehaus.griffon.plugins:griffon-jbusycomponent-swing:0.1.0'
+  compile 'org.codehaus.griffon.plugins:griffon-jgoodies-forms-swing:0.1.0'
+
+  compile 'org.codehaus.griffon.plugins:griffon-fontawesome-swing-groovy:1.2.1'
+
+  compile 'com.h2database:h2:1.3.170'
+  compile 'org.yaml:snakeyaml:1.13'
+  compile 'com.google.code.docbook4j:docbook4j:1.0.0'
+
+  compile 'commons-lang:commons-lang:2.6'
+  compile 'commons-net:commons-net:3.3'
+
+  compile 'net.sf.opencsv:opencsv:2.3'
+
+  compile 'com.github.jbytecode:RCaller:2.8'
+
+  compile name: 'fontbox-1.3.1'
+  compile name: 'fop-pdf-images-2.0.0'
+  compile name: 'jempbox-1.3.1'
+  compile name: 'pdfbox-1.3.1'
+
+  runtime 'org.slf4j:slf4j-api:1.7.+'
+  runtime 'ch.qos.logback:logback-classic:1.+'
+
+  testCompile "org.codehaus.griffon:griffon-fest-test:${griffon.version}"
+  testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+  testCompile 'com.jayway.awaitility:awaitility-groovy:1.6.3'
+}
+
+tasks.withType(JavaCompile) {
+  sourceCompatibility = project.sourceCompatibility
+  targetCompatibility = project.targetCompatibility
+}
+
+tasks.withType(GroovyCompile) {
+  sourceCompatibility = project.sourceCompatibility
+  targetCompatibility = project.targetCompatibility
+}
+
+import com.github.jengelman.gradle.plugins.shadow.transformers.*
+
+shadowJar {
+  transform(ServiceFileTransformer)
+  transform(ServiceFileTransformer) {
+    path = 'META-INF/griffon'
+  }
+  transform(ServiceFileTransformer) {
+    path = 'META-INF/types'
+  }
+  transform(PropertiesFileTransformer) {
+    paths = [
+      'META-INF/editors/java.beans.PropertyEditor'
+    ]
+  }
+}
+
+launch4j {
+  mainClassName = project.mainClassName
+
+  jreMinVersion = "1.7.0"
+  jdkPreference = "preferJre"
+  jreRuntimeBits = "64/32"
+
+  icon = project.projectDir.toString() + '/src/media/neobox.ico'
+  splashFileName = project.projectDir.toString() + '/src/media/neobox-splash.bmp'
+
+  // initialHeapSize = 512
+  // maxHeapSize = 2048
+
+  outfile = project.applicationName + '.exe'
+
+  version = project.version
+  textVersion = project.version
+  copyright = "Neo Team"
+  companyName = ""
+  description = project.name
+  productName = project.name
+  internalName = project.name
+}
+
+distributions {
+  main {
+    baseName = project.applicationName
+    contents {
+      from('build/launch4j') {
+        include '*.exe'
+      }
+      from('src/media') {
+        include '*.png'
+        into 'resources'
+      }
+    }
+  }
+}
+distZip.dependsOn "launch4j"
+
+startScripts {
+  applicationName = project.applicationName
+  doLast {
+    // Fix launch script for linux
+    // if (!macosx) unixScript.text = unixScript.text.replaceAll('"(-Xdock:(name|icon)=)([^"]*?)(")', ' ')
+    unixScript.text = unixScript.text.replaceAll('"(-Xdock:(name|icon)=)([^"]*?)(")', ' ')
+    windowsScript.text = windowsScript.text.replaceAll('"(-Xdock:(name|icon)=)([^"]*?)(")', ' ')
+  }
+}
+
+if (hasProperty('debugRun') && ((project.debugRun as boolean))) {
+  run {
+    jvmArgs '-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005'
+  }
+}
+
+run {
+  // args = ['en']
 }

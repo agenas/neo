@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Stefano Gualdi, AGENAS.
+ * Copyright 2014-2016 Stefano Gualdi, AGENAS.
  *
  * Licensed under the European Union Public Licence (EUPL), Version 1.1 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package neobox
+
+import griffon.core.artifact.GriffonView
+import griffon.metadata.ArtifactProviderFor
 
 /**
  * @author Stefano Gualdi <stefano.gualdi@gmail.com>
  */
-panel(id: 'content') {
-    migLayout layoutConstraints: 'fill'
-    panel(constraints: 'grow, wrap') {
-        borderLayout(hgap: 10, vgap: 10)
-        label("""
-            <html><p>${app.getMessage('application.message.noPreferences', 'No preferences available.')}</p>
+@ArtifactProviderFor(GriffonView)
+class PreferencesView {
+  FactoryBuilderSupport builder
+  NeoboxModel model
+
+  void initUI() {
+    builder.with {
+      panel(id: 'content') {
+        migLayout layoutConstraints: 'fill'
+
+        panel(constraints: 'grow, wrap') {
+          borderLayout(hgap: 10, vgap: 10)
+          label("""
+            <html><p>${application.messageSource.getMessage('application.message.noPreferences')}</p>
             <br/>
             </html>
-        """.stripIndent(12).trim(), constraints: CENTER)
+          """.stripIndent(12).trim(), constraints: CENTER)
+        }
+
+        // button(hideAction, constraints: 'right')
+
+        keyStrokeAction(component: current,
+          keyStroke: 'ESCAPE',
+          condition: 'in focused window',
+          action: hideAction)
+      }
     }
-
-    // button(hideAction, constraints: 'right')
-
-    keyStrokeAction(component: current,
-            keyStroke: 'ESCAPE',
-            condition: 'in focused window',
-            action: hideAction)
+  }
 }

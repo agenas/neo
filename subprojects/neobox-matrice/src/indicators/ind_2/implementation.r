@@ -197,9 +197,9 @@ indicator2 <- function(xml=1,graphs=1,output=".",append=0,verbose=1) {
 
   if (tot_pat>0) {
    for (m in 1:length(list_patologie)) {
-    read_comb(input_table=input_data,patologia=list_patologie[m],fonti=list_fonti[m],output=paste("input_",list_patologie[m],sep=""),venn=paste("venn_",list_patologie[m],sep=""),title=paste(fonti_label,list_patologie_names[m],sep=""),verbose=verbose)
+    read_comb(input_table=input_data,patologia=list_patologie[m],fonti=list_fonti[m],output=paste("input_",list_patologie[m],sep=""),venn=paste("venn_",list_patologie[m],sep=""),title=paste(fonti_label,list_patologie_names[m],sep=""),verbose=verbose,graphs=graphs)
    }
-   read_comb(input_table=input_data,patologia=list_patologie,fonti=list_fonti,output="input_allpat",venn="venn_allpat",title=title,verbose=verbose)
+   read_comb(input_table=input_data,patologia=list_patologie,fonti=list_fonti,output="input_allpat",venn="venn_allpat",title=title,verbose=verbose,graphs=graphs)
   }
 
   ###############################################################
@@ -1473,7 +1473,7 @@ indicator2 <- function(xml=1,graphs=1,output=".",append=0,verbose=1) {
 
 } # end Indicator 2
 
-read_comb <- function(input_table,patologia,fonti,output,venn,title,verbose=1) {
+read_comb <- function(input_table,patologia,fonti,output,venn,title,verbose=1,graphs=1) {
 
  # Set the working directory
  setwd(workDir)
@@ -1543,31 +1543,34 @@ read_comb <- function(input_table,patologia,fonti,output,venn,title,verbose=1) {
   category=c("Discharges","Exemptions","Drugs")
  }
 
- output_venn<-draw.triple.venn(
-   area1=output_data$hosppct,
-   area2=output_data$exepct,
-   area3=output_data$drugspct,
-   n12=output_data$n12,
-   n13=output_data$n13,
-   n23=output_data$n23,
-   n123=output_data$n123,
-   category=category,
-   cat.pos = c(-30,30,180),
-   col = "black",
-   lty = rep("dotted",3),
-   lwd = rep(2,3),
-   fill = c("dodgerblue", "goldenrod1",  "seagreen3"),
-   cat.col = c("dodgerblue", "goldenrod1",  "seagreen3"),
-   alpha = rep(0.5,3),
-   label.col = rep("black",7),
-   cex = c(1.2,1.2,1.2,1.2,1.2,1.2,1.2),
-   fontfamily = rep("serif",7),
-   fontface = rep("plain",7),
-   cat.cex = 1.2,
-   cat.fontfamily = "serif",
-   ind=FALSE,
-   main=title)
-
+ if (graphs==1) {
+   output_venn<-draw.triple.venn(
+     area1=output_data$hosppct,
+     area2=output_data$exepct,
+     area3=output_data$drugspct,
+     n12=output_data$n12,
+     n13=output_data$n13,
+     n23=output_data$n23,
+     n123=output_data$n123,
+     category=category,
+     cat.pos = c(-30,30,180),
+     col = "black",
+     lty = rep("dotted",3),
+     lwd = rep(2,3),
+     fill = c("dodgerblue", "goldenrod1",  "seagreen3"),
+     cat.col = c("dodgerblue", "goldenrod1",  "seagreen3"),
+     alpha = rep(0.5,3),
+     label.col = rep("black",7),
+     cex = c(1.2,1.2,1.2,1.2,1.2,1.2,1.2),
+     fontfamily = rep("serif",7),
+     fontface = rep("plain",7),
+     cat.cex = 1.2,
+     cat.fontfamily = "serif",
+     ind=FALSE,
+     main=title)
+ } else {
+   output_venn<-NULL
+ }
  assign(output,output_data,envir=.GlobalEnv)
  assign(venn,output_venn,envir=.GlobalEnv)
 

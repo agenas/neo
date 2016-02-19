@@ -20,17 +20,15 @@
 
 apply plugin: 'distribution'
 
-version = ext.matriceVersion
-
 distributions {
-    main {
-        contents {
-            from(file('src/import')) {
-                into('import')
-            }
-            from(file('src/indicators')) {
-                into('indicators')
-            }
-        }
+  main {
+    contents {
+      from(file('src/import')) {
+        into('import')
+      }
+      from(file('src/indicators')) {
+        into('indicators')
+      }
     }
+  }
 }
