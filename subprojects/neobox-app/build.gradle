@@ -69,6 +69,7 @@ repositories {
 
   maven { url "http://docbook4j.googlecode.com/svn/m2-repo/releases/" }
   maven { url "http://dl.bintray.com/stefanogualdi/griffon-plugins" }
+  maven { url "http://dl.bintray.com/stefanogualdi/libs" }
 
   flatDir {
     dirs 'lib'
@@ -90,7 +91,8 @@ dependencies {
 
   compile 'com.h2database:h2:1.3.170'
   compile 'org.yaml:snakeyaml:1.13'
-  compile 'com.google.code.docbook4j:docbook4j:1.0.0'
+
+  compile 'net.javaforge.docbook4j:docbook4j:1.0.1'
 
   compile 'commons-lang:commons-lang:2.6'
   compile 'commons-net:commons-net:3.3'
