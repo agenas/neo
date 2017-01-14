@@ -71,7 +71,7 @@ class StatEngineService {
     indicatorsHolder.parse(indicatorsDir, language)
   }
 
-  Boolean runIndicators(List indicators, Map runningParams, File indicatorsDir, File workDir, File firstWorkDir) {
+  Boolean runIndicators(List indicators, Map runningParams, File indicatorsDir, File workDir, File firstWorkDir, File libsDir) {
     IndicatorsHolder indicatorsHolder = IndicatorsHolder.instance
 
     StopWatch timer = new StopWatch()
@@ -87,7 +87,7 @@ class StatEngineService {
       app.eventRouter.publishEvent('RunIndicatorsProgress', [i])
 
       def ind = indicatorsHolder.get(i)
-      result = runIndicator(ind, runningParams, indicatorsDir, workDir, firstWorkDir)
+      result = runIndicator(ind, runningParams, indicatorsDir, workDir, firstWorkDir, libsDir)
       if (!result) {
         log.error "Indicator ${i} failed!"
         break
@@ -105,11 +105,16 @@ class StatEngineService {
     return result
   }
 
-  Boolean runIndicator(Indicator indicator, Map runningParams, File indicatorsDir, File workDir, File firstWorkDir) {
+  Boolean runIndicator(Indicator indicator, Map runningParams, File indicatorsDir, File workDir, File firstWorkDir, File libsDir) {
     Boolean result = false
 
     StopWatch timer = new StopWatch()
     timer.start()
+
+    // Prepare base directory for R libraries
+    if (!libsDir.exists()) {
+      libsDir.mkdirs()
+    }
 
     // Prepare output/working directory for R script
     if (!workDir.exists()) {
@@ -166,7 +171,7 @@ class StatEngineService {
     File scriptFile = new File(scriptDir, NeoboxUtils.INDICATOR_SOURCE_FILE)
     if (scriptFile.exists()) {
       try {
-        execScript(scriptFile, runningParams, indicatorsDir, outputDir)
+        execScript(scriptFile, runningParams, indicatorsDir, outputDir, libsDir)
 
         // Check if zip specifications are present and if present create the zip
         Yaml yaml = new Yaml()
@@ -212,10 +217,11 @@ class StatEngineService {
     return result
   }
 
-  def execScript(File script, Map runningParams, File baseDir, File workDir) {
+  def execScript(File script, Map runningParams, File baseDir, File workDir, File libsDir) {
     String pScript = NeoboxUtils.convertToPlatformSpecificPath(script.absolutePath)
     String pBaseDir = NeoboxUtils.convertToPlatformSpecificPath(baseDir.absolutePath)
     String pWorkDir = NeoboxUtils.convertToPlatformSpecificPath(workDir.absolutePath)
+    String pLibsDir = NeoboxUtils.convertToPlatformSpecificPath(libsDir.absolutePath)
 
     RCode code = new RCode()
 
@@ -223,6 +229,10 @@ class StatEngineService {
     code.addRCode("rm(list=ls(all=TRUE))")
     code.addRCode("baseDir <- \"${pBaseDir}\"")
     code.addRCode("workDir <- \"${pWorkDir}\"")
+    code.addRCode("libsDir <- \"${pLibsDir}\"")
+
+    // Add custom libraries path for R
+    code.addRCode(".libPaths(c(\"${pLibsDir}\", .libPaths()))")
 
     // Define global parameters for R code
     def tmp

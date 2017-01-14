@@ -516,6 +516,9 @@ class NeoboxController {
           }
 
           if (doIt) {
+            // Crea la directory per ospitare le librerie R
+            File libsDir = new File(workDir, "rlibs")
+
             File firstWorkDir = null
             for (int i = 0; i < totalRuns; i++) {
               // Calcola il nome della sottodirectory di workdir (all se non loop)
@@ -535,7 +538,7 @@ class NeoboxController {
                 }
               }
 
-              if (statEngineService.runIndicators(model.indicatorsList, runningParams, indicatorsDir, realWorkDir, firstWorkDir)) {
+              if (statEngineService.runIndicators(model.indicatorsList, runningParams, indicatorsDir, realWorkDir, firstWorkDir, libsDir)) {
                 reportService.runReportGeneration(selectedIndicatorsForReport, runningParams, indicatorsDir, realWorkDir)
               }
 
