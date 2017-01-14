@@ -24,8 +24,8 @@
 
 indicator {
   id = '7'
-  
-  hidden=true
+
+  hidden = true
 
   description = "Crea Dataset Test"
   description_en = "Create test dataset"

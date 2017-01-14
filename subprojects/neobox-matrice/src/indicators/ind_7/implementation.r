@@ -54,8 +54,9 @@ indicator7 <- function(verbose=1) {
 
  ####################################################################
  # Change main parameters to create a dataset of the desired size and location
- n<-175000          # small number
-# n<-2500000          # high number
+# n<-175000          # small number
+# n<-1386548          # mid number
+ n<-2500000          # high number
  id_province<-"PPP" # id province
  id_lha<-"LLL"      # id local health authority
  n_comune<-206      # no. councils in local health authority

@@ -299,7 +299,6 @@ indicator2 <- function(xml=1,graphs=1,output=".",append=0,verbose=1) {
 
    list_venn<-c(list_patologie,"allpat")
    list_venn_names<-c(list_patologie_names,fonti_atleast)
-
    p<-list()
    replica<-c(2/36)
    i<-3
@@ -326,8 +325,7 @@ indicator2 <- function(xml=1,graphs=1,output=".",append=0,verbose=1) {
     textgrob<-"Percentage Identified by each Source by Disease"
    }
 
-   args.list <- c(p,list(nrow=ceiling(length(list_venn)/3)*2+1,ncol=3,
-                  main=textGrob(textgrob,gp=gpar(lineheight=4,fontsize=20,font=1)),heights=replica))
+   args.list <- c(p,list(nrow=ceiling(length(list_venn)/3)*2+1,ncol=3,top=textGrob(textgrob,gp=gpar(lineheight=4,fontsize=20,font=1)),heights=replica))
 
    pdf(file = "2_1_venndiagram.pdf",height=10,width=14)
    do.call(grid.arrange,args.list)
@@ -1127,7 +1125,7 @@ indicator2 <- function(xml=1,graphs=1,output=".",append=0,verbose=1) {
    grid.arrange(textGrob(main_textgrob,,gp=gpar(fontsize=main_fontsize,font=1)),grobTree(venn_percent),nrow=2,heights=c(1/8,7/8))
   } else {
    if (ref_tot_pat>0) {
-    grid.arrange(main=textGrob(main_textgrob,gp=gpar(fontsize=14,font=1)),
+    grid.arrange(top=textGrob(main_textgrob,gp=gpar(fontsize=14,font=1)),
                  textGrob(textgrob_1,gp=gpar(fontsize=12,font=1)),textGrob(textgrob_2,gp=gpar(fontsize=12,font=1)),
                  grobTree(venn_percent),grobTree(venn_ref_percent),nrow=2,heights=c(1/8,7/8))
    } else {
@@ -1150,7 +1148,7 @@ indicator2 <- function(xml=1,graphs=1,output=".",append=0,verbose=1) {
    grid.arrange(textGrob(main_textgrob,,gp=gpar(fontsize=main_fontsize+4,font=1)),grobTree(venn_percent),nrow=2,heights=c(1/8,7/8))
   } else {
    if (ref_tot_pat>0) {
-    grid.arrange(main=textGrob(main_textgrob,gp=gpar(fontsize=14,font=1)),textGrob(textgrob_1,gp=gpar(fontsize=12,font=1)),textGrob(textgrob_2,gp=gpar(fontsize=12,font=1)),grobTree(venn_percent),grobTree(venn_ref_percent),nrow=2,heights=c(1/8,7/8))
+    grid.arrange(top=textGrob(main_textgrob,gp=gpar(fontsize=14,font=1)),textGrob(textgrob_1,gp=gpar(fontsize=12,font=1)),textGrob(textgrob_2,gp=gpar(fontsize=12,font=1)),grobTree(venn_percent),grobTree(venn_ref_percent),nrow=2,heights=c(1/8,7/8))
    } else {
     grid.arrange(textGrob(main_textgrob,,gp=gpar(fontsize=main_fontsize+4,font=1)),grobTree(venn_percent),nrow=2,heights=c(1/8,7/8))
    }
@@ -1571,6 +1569,7 @@ read_comb <- function(input_table,patologia,fonti,output,venn,title,verbose=1,gr
  } else {
    output_venn<-NULL
  }
+
  assign(output,output_data,envir=.GlobalEnv)
  assign(venn,output_venn,envir=.GlobalEnv)
 

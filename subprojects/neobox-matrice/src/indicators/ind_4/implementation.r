@@ -565,7 +565,7 @@ indicator4 <- function(xml=1,graphs=1,output=".",append=0,verbose=1) {
                        draw=FALSE)
 
    pdf(file = paste("4_1_",q,"_venndiagram.pdf",sep=""),height=7.5,width=10)
-   grid.arrange(main=textGrob(textgrob1,gp=gpar(fontsize=18,font=1)),
+   grid.arrange(top=textGrob(textgrob1,gp=gpar(fontsize=18,font=1)),
                 textGrob(textgrob2,gp=gpar(fontsize=15,font=1)),textGrob(textgrob3,gp=gpar(fontsize=15,font=1)),
                 grobTree(venn),legend,nrow=2,ncol=2,heights=c(1/16,7/8),widths=c(25/32,7/32))
    if (verbose==1) {
@@ -586,7 +586,7 @@ indicator4 <- function(xml=1,graphs=1,output=".",append=0,verbose=1) {
    dev.off()
 
    png(file = paste("4_1_",q,"_venndiagram.png",sep=""),height=600,width=800)
-   grid.arrange(main=textGrob(textgrob1,gp=gpar(fontsize=18,font=1)),textGrob(textgrob2,gp=gpar(fontsize=15,font=1)),textGrob(textgrob3,gp=gpar(fontsize=15,font=1)),grobTree(venn),legend,nrow=2,ncol=2,heights=c(1/16,7/8),widths=c(25/32,7/32))
+   grid.arrange(top=textGrob(textgrob1,gp=gpar(fontsize=18,font=1)),textGrob(textgrob2,gp=gpar(fontsize=15,font=1)),textGrob(textgrob3,gp=gpar(fontsize=15,font=1)),grobTree(venn),legend,nrow=2,ncol=2,heights=c(1/16,7/8),widths=c(25/32,7/32))
    if (verbose==1) {
     if (q==1) {
      if (language=="italian") {

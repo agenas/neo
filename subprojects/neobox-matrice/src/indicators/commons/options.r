@@ -37,7 +37,7 @@ liste_opzioni<-function(installed=1)
   }
  }
 
- ############## impostate da neobox al momento del lancio
+ ############## set by neobox at startup
 
 # language<-"it"
 # engine_type<-"local"
@@ -47,14 +47,14 @@ liste_opzioni<-function(installed=1)
 # reference<-""
 
 #####################################
-# Alcuni valori prova:
+# Test values:
 #####################################
 # input_files<-c("/home/fabrizio/Desktop/neobox_run/data/tracciato_record_centrale_arezzo.zip","/home/fabrizio/Desktop/neobox_run/data/tracciato_record_centrale_brescia.zip")
-# select_unit="DIST_MMG=='004'" (locale)
-# select_unit="(ASL=='030302' & DIST_MMG %in% c('001','002','012')) | ASL=='108'" (centrale)
+# select_unit="DIST_MMG=='4'" (locale) [PARAMETER "Selector" in Neobox]
+# select_unit="(ASL=='30302' & DIST_MMG %in% c('1','2','12')) | ASL=='108'" (centrale)
 # funnel_group=""
-# funnel_group="MMG=='30743' | MMG=='15774' | MMG=='33722' | MMG=='30788' | MMG=='04616'" (locale)
-# funnel_group="ASL=='030302' & DIST_MMG=='012'" (centrale)
+# funnel_group="MMG=='30743' | MMG=='15774' | MMG=='33722' | MMG=='30788' | MMG=='4616'" (locale) [PARAMETER "Highlight" in Neobox]
+# funnel_group="ASL=='30302' & DIST_MMG=='12'" (centrale)
 #####################################
 
  if (language=="it") {
