@@ -834,7 +834,7 @@ class NeoboxController {
     NeoboxUtils.PREFERENCES.put("operatorName", model.operatorName)
     NeoboxUtils.PREFERENCES.put("year", model.year)
     NeoboxUtils.PREFERENCES.put("mainLanguage", model.mainLanguage)
-    NeoboxUtils.PREFERENCES.put("engineType", model.engineType)
+    NeoboxUtils.PREFERENCES.put("engineType", model.engineType ?: "")
     NeoboxUtils.PREFERENCES.put("language", model.language)
     NeoboxUtils.PREFERENCES.put("referenceType", model.referenceType)
     NeoboxUtils.PREFERENCES.put("server", model.server)
