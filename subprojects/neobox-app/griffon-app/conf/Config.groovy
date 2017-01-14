@@ -15,7 +15,7 @@
  */
 application {
   title = 'NEObox'
-  version = '1.0.5'
+  version = '1.5.1'
   startupGroups = ['neobox']
   autoShutdown = true
 }
