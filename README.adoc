@@ -3,7 +3,7 @@
 == Prerequisites
 
 * Oracle JDK 1.7
-* R version 3.0.1
+* R version 3.3.2
 
 == Available tasks
 
