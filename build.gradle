@@ -205,15 +205,12 @@ izpack {
   ]
 }
 
-task installer() {
+task installer << {
   description 'Create the installer'
-  dependsOn 'izPackCreateInstaller'
 }
+installer.dependsOn izPackCreateInstaller
 
-task publish() {
-  description 'Publish release on GitHub'
-  dependsOn 'installer', 'githubRelease'
-}
+githubRelease.dependsOn installer
 
 idea {
   project {
