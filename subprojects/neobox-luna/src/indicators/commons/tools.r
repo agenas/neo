@@ -555,7 +555,7 @@ multigraph_grobs<- function(list_graphs,nrow=3,ncol=2,
 
   args.list <- c(p_g,
                  list(nrow=nrow*2+1,ncol=ncol,
-                      main=textGrob(title,gp=gpar(lineheight=4,fontsize=20,font=1)),
+                      top=textGrob(title,gp=gpar(lineheight=4,fontsize=20,font=1)),
                       heights=replica)
                  )
 

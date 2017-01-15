@@ -1,4 +1,4 @@
-indicatorMain <- function(xml=1,graphs=1,output=".",append=0,verbose=1) {
+indicator3 <- function(xml=1,graphs=1,output=".",append=0,verbose=1) {
 
  if (verbose>0) {
   cat("########################################\r")
@@ -20,13 +20,6 @@ indicatorMain <- function(xml=1,graphs=1,output=".",append=0,verbose=1) {
 
  # Conversione delle colonne in numerico
  input_data <- make_numeric(input_data,c(list_numvars,"COUNT"))
-
- # HACK: Estrae select_unit per rendere il codice R compatibile con la selezione da neobox
- tmp <- select_unit
- s <- regexpr('==', tmp)
- start <- s[1] + attr(s, "match.length") + 1
- stop <- nchar(tmp) - 1
- select_unit <- substr(tmp, start, stop)
 
  ########################
  # Criteri
@@ -81,7 +74,7 @@ indicatorMain <- function(xml=1,graphs=1,output=".",append=0,verbose=1) {
    table2_1[1,"zona"]  <- "Zona"
    table2_1[2,"zona"]  <- "ASL"
    table2_1[3,"zona"]  <- "Regione"
-
+  
    zona_data<-input_data[input_data$LIV1_ZONA==select_unit,]
    asl<-zona_data$LIV2_ASL[1]
    regione<-zona_data$LIV3_REGIONE[1]

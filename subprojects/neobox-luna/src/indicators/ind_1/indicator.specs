@@ -1,0 +1,32 @@
+/****************
+ Sezione 1
+*****************/
+
+indicator {
+
+  id = '1'
+
+  description = "Modulo 1"
+  description_en = "Module 1"
+
+  dependsOn = ['setup']
+
+  input {
+    table = "luna"
+
+    fields = [
+     'GENERE',
+     'count(*) as COUNT'
+    ]
+
+    groups = [
+      'GENERE'
+    ]
+
+    file = "input.csv"
+  }
+
+  output {
+    files = ["report.xml"]
+  }
+}

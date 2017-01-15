@@ -1,0 +1,51 @@
+/****************
+ Sezione 2
+*****************/
+
+indicator {
+
+  id = '2'
+
+  description = "Modulo 2"
+  description_en = "Module 2"
+
+  dependsOn = ['setup']
+
+  input {
+    table = "luna"
+
+    fields = [
+      'LIV1_ZONA',
+      'LIV2_ASL',
+      'LIV3_REGIONE',
+      'GENERE',
+      'I1A_NUM',
+      'I1A_DEN',
+      "sum(I1A_NUM) as NUM",
+      "sum(I1A_DEN) as DEN",
+      'count(*) as COUNT'
+    ]
+
+    groups = [
+      'LIV1_ZONA',
+      'LIV2_ASL',
+      'LIV3_REGIONE',
+      'GENERE',
+      'I1A_NUM',
+      'I1A_DEN'
+    ]
+
+    order = [
+      'LIV1_ZONA',
+      'LIV2_ASL',
+      'LIV3_REGIONE',
+      'GENERE'
+    ]
+
+    file = "input.csv"
+  }
+
+  output {
+    files = ["report.xml"]
+  }
+}

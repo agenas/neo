@@ -4,10 +4,10 @@
 
 indicator {
 
-  id = '001'
+  id = '3'
 
-  description = "Indicatori LUNA"
-  description_en = "LUNA Indicators"
+  description = "Indicatori"
+  description_en = "Indicators"
 
   dependsOn = ['setup']
 
